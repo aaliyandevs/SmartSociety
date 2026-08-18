@@ -119,7 +119,7 @@ export function WalkInForm({
               id="flatSearch"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Type a flat number or resident name, e.g. A-101 or Sharma"
+              placeholder="Type a flat number or resident name, e.g. A-101 or Khan"
               className="h-12 pl-9"
               autoComplete="off"
             />
@@ -192,9 +192,9 @@ export function WalkInForm({
             name="phone"
             inputMode="numeric"
             required
-            maxLength={10}
+            maxLength={11}
             className="h-12"
-            placeholder="9876543210"
+            placeholder="03001234567"
           />
         </Field>
       </FormGrid>
@@ -210,7 +210,7 @@ export function WalkInForm({
             name="vehicleNumber"
             className="h-12 uppercase"
             maxLength={14}
-            placeholder="MH12AB1234"
+            placeholder="LEA1234"
           />
         </Field>
         <Field
@@ -230,7 +230,7 @@ export function WalkInForm({
               <SelectValue placeholder="Not collected" />
             </SelectTrigger>
             <SelectContent>
-              {['Aadhaar', 'Driving Licence', 'Voter ID', 'PAN', 'Company ID', 'Passport'].map((type) => (
+              {['CNIC', 'Driving Licence', 'NICOP', 'NTN', 'Company ID', 'Passport'].map((type) => (
                 <SelectItem key={type} value={type}>
                   {type}
                 </SelectItem>

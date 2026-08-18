@@ -114,7 +114,7 @@ export function PersonalContacts({ contacts }: { contacts: PersonalContact[] }) 
                     name="phone"
                     inputMode="numeric"
                     required
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={editing?.phone}
                   />
                 </Field>
@@ -127,7 +127,7 @@ export function PersonalContacts({ contacts }: { contacts: PersonalContact[] }) 
                     id="altPhone"
                     name="altPhone"
                     inputMode="numeric"
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={editing?.altPhone ?? ''}
                   />
                 </Field>

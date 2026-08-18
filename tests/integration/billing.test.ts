@@ -326,8 +326,8 @@ describe('PDF receipts', () => {
 
     const pdf = await buildReceiptPdf({
       societyName: 'Test Society',
-      societyAddress: '1 Test Road, Pune 411045',
-      societyContact: 'office@test.local · 9822000000',
+      societyAddress: '1 Test Road, Lahore 54000',
+      societyContact: 'office@test.local · 03004000000',
       bill: detail!,
       payment: detail!.payments.find((entry) => entry.id === payment.paymentId) ?? null,
     });
@@ -353,7 +353,7 @@ describe('PDF receipts', () => {
 
     const pdf = await buildReceiptPdf({
       societyName: 'Test Society',
-      societyAddress: '1 Test Road, Pune 411045',
+      societyAddress: '1 Test Road, Lahore 54000',
       societyContact: 'office@test.local',
       bill: detail!,
       payment: null,

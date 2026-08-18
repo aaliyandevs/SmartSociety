@@ -213,7 +213,7 @@ export async function verifyGateCode(rawCode: string): Promise<VerificationOutco
     return {
       ok: false,
       reason: 'TOO_EARLY',
-      detail: `This pass is not valid yet. It becomes active at ${pass.validFrom.toLocaleString('en-IN')}.`,
+      detail: `This pass is not valid yet. It becomes active at ${pass.validFrom.toLocaleString('en-PK')}.`,
       pass: shaped,
     };
   }
@@ -226,7 +226,7 @@ export async function verifyGateCode(rawCode: string): Promise<VerificationOutco
     return {
       ok: false,
       reason: 'EXPIRED',
-      detail: `This pass expired at ${pass.validUntil.toLocaleString('en-IN')}. Ask the resident to issue a new one.`,
+      detail: `This pass expired at ${pass.validUntil.toLocaleString('en-PK')}. Ask the resident to issue a new one.`,
       pass: shaped,
     };
   }
@@ -252,7 +252,7 @@ export async function verifyGateCode(rawCode: string): Promise<VerificationOutco
     return {
       ok: false,
       reason: 'ALREADY_INSIDE',
-      detail: `This visitor is already recorded inside (entered ${openLog.entryAt?.toLocaleString('en-IN') ?? 'earlier'}). Record an exit before scanning again.`,
+      detail: `This visitor is already recorded inside (entered ${openLog.entryAt?.toLocaleString('en-PK') ?? 'earlier'}). Record an exit before scanning again.`,
       pass: shaped,
     };
   }

@@ -108,7 +108,7 @@ export function VehicleManager({ vehicles }: { vehicles: VehicleView[] }) {
                   label="Registration number"
                   htmlFor="registrationNo"
                   required
-                  hint="e.g. MH12AB1234"
+                  hint="e.g. LEA1234"
                   errors={fieldErrors(state, 'registrationNo')}
                 >
                   <Input

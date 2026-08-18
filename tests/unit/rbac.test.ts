@@ -6,6 +6,7 @@ import {
   canAccessPath,
   hasPermission,
   isProtectedPath,
+  resolveLoginDestination,
   rolesForPath,
 } from '@/lib/rbac';
 
@@ -67,5 +68,38 @@ describe('role-based access control', () => {
     expect(ROLE_HOME.RESIDENT).toBe('/resident');
     expect(ROLE_HOME.GUARD).toBe('/guard');
     expect(ROLE_HOME.MAINTENANCE_STAFF).toBe('/staff');
+  });
+
+  describe('resolveLoginDestination()', () => {
+    it('sends a role to its own home when there is no requested destination', () => {
+      expect(resolveLoginDestination('RESIDENT', undefined)).toBe('/resident');
+      expect(resolveLoginDestination('RESIDENT', null)).toBe('/resident');
+      expect(resolveLoginDestination('RESIDENT', '')).toBe('/resident');
+    });
+
+    it('honours a requested path within the role\'s own area', () => {
+      expect(resolveLoginDestination('RESIDENT', '/resident/bills')).toBe('/resident/bills');
+      expect(resolveLoginDestination('GUARD', '/guard/verify')).toBe('/guard/verify');
+    });
+
+    it("falls back to the role's own home instead of a stale next for another role's area", () => {
+      // This is the bug this function fixes: any account signing in through a
+      // login page still carrying `next=/guard` (left over from someone else
+      // having been bounced there, or a stale bookmark) must land on its own
+      // dashboard, not get diverted into another role's console just because
+      // it happens to be technically permitted to view it — e.g. ADMIN can
+      // browse /guard, but that is not the same as intending to land there
+      // straight after signing in.
+      expect(resolveLoginDestination('RESIDENT', '/guard')).toBe('/resident');
+      expect(resolveLoginDestination('MAINTENANCE_STAFF', '/guard')).toBe('/staff');
+      expect(resolveLoginDestination('GUARD', '/admin')).toBe('/guard');
+      expect(resolveLoginDestination('ADMIN', '/guard')).toBe('/admin');
+      expect(resolveLoginDestination('ADMIN', '/staff')).toBe('/admin');
+    });
+
+    it('refuses an off-origin or protocol-relative destination', () => {
+      expect(resolveLoginDestination('ADMIN', 'https://evil.example/phish')).toBe('/admin');
+      expect(resolveLoginDestination('ADMIN', '//evil.example/phish')).toBe('/admin');
+    });
   });
 });

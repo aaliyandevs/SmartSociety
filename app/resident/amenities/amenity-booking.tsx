@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useActionState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { CalendarDays, CheckCircle2, Clock, IndianRupee, MapPin, Users } from 'lucide-react';
+import { CalendarDays, CheckCircle2, Clock, Banknote, MapPin, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -138,7 +138,7 @@ export function AmenityBooking({
                   {option.capacity}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <IndianRupee className="size-3" aria-hidden />
+                  <Banknote className="size-3" aria-hidden />
                   {option.feeLabel}
                 </span>
               </p>

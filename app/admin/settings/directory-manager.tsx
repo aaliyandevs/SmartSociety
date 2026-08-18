@@ -107,7 +107,7 @@ export function DirectoryManager({ contacts }: { contacts: DirectoryContact[] })
                     id="designation"
                     name="designation"
                     maxLength={60}
-                    placeholder="Pune Fire Control Room"
+                    placeholder="Lahore Rescue 1122"
                     defaultValue={editing?.designation ?? ''}
                   />
                 </Field>
@@ -120,7 +120,7 @@ export function DirectoryManager({ contacts }: { contacts: DirectoryContact[] })
                     name="phone"
                     inputMode="numeric"
                     required
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={editing?.phone}
                   />
                 </Field>
@@ -133,7 +133,7 @@ export function DirectoryManager({ contacts }: { contacts: DirectoryContact[] })
                     id="altPhone"
                     name="altPhone"
                     inputMode="numeric"
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={editing?.altPhone ?? ''}
                   />
                 </Field>

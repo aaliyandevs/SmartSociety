@@ -140,7 +140,7 @@ describe('authenticate()', () => {
         passwordHash: await hashPassword(TEST_PASSWORD),
         role: 'RESIDENT',
         fullName: 'Lock Me',
-        phone: '9822000099',
+        phone: '03004000099',
       },
     });
 
@@ -162,7 +162,7 @@ describe('authenticate()', () => {
         passwordHash: await hashPassword(TEST_PASSWORD),
         role: 'RESIDENT',
         fullName: 'Suspended User',
-        phone: '9822000098',
+        phone: '03004000098',
         status: 'SUSPENDED',
       },
     });

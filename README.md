@@ -408,7 +408,7 @@ in [docs/assumptions.md](./docs/assumptions.md).
 | A-6 | Polling (45 s / 30 s, paused on hidden tabs) satisfies "real-time"; gate verification is synchronous and does not depend on it |
 | A-7 | Housekeeping runs opportunistically on page load rather than in a separate scheduler that could fail silently |
 | A-8 | One society per deployment, but the schema is rooted at `Society` so multi-tenancy is a scoping change |
-| A-9 | Indian Rupees, `en-IN` formatting, Indian mobile and vehicle formats |
+| A-9 | Pakistani Rupees, `en-PK` formatting, Pakistani mobile and vehicle formats |
 | A-10 | Monthly billing, 15th due date, 2% penalty after a 5-day grace period — all configurable in Settings |
 | A-11 | SLA targets of 4 / 12 / 48 / 96 hours by priority |
 | A-12 | The emergency siren is offered as an explicit control, because browsers block autoplaying audio |

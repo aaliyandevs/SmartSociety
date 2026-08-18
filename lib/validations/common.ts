@@ -7,7 +7,7 @@ export const cuidSchema = z.string().min(1, 'Required').max(64);
 export const phoneSchema = z
   .string()
   .trim()
-  .regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit Indian mobile number');
+  .regex(/^03\d{9}$/, 'Enter a valid 11-digit Pakistani mobile number, e.g. 03001234567');
 
 export const optionalPhoneSchema = z
   .union([phoneSchema, z.literal('')])
@@ -23,16 +23,14 @@ export const nameSchema = z
   .min(2, 'Must be at least 2 characters')
   .max(80, 'Must be 80 characters or fewer');
 
-/** Indian vehicle plate, e.g. "MH12AB1234" or "MH 12 AB 1234". */
+/** Pakistani vehicle plate, e.g. "LEA-1234" or "LEA 1234". */
 export const vehicleNumberSchema = z
   .string()
   .trim()
   .toUpperCase()
   .transform((value) => value.replace(/[\s-]/g, ''))
   .pipe(
-    z
-      .string()
-      .regex(/^[A-Z]{2}\d{1,2}[A-Z]{0,3}\d{1,4}$/, 'Enter a valid registration number, e.g. MH12AB1234'),
+    z.string().regex(/^[A-Z]{2,3}\d{2,4}$/, 'Enter a valid registration number, e.g. LEA1234'),
   );
 
 export const optionalVehicleNumberSchema = z

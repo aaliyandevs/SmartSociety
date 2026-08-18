@@ -86,12 +86,12 @@ smallest structure that still exercises every relationship the SRS specifies.
 |---|---|
 | Society | Test Society · 2% penalty · 5-day grace |
 | Block | A · 4 floors |
-| Flats | A-101 (owner-occupied, ₹3,000 base, 2 parking) · A-102 (tenant, ₹4,000 base, 1 parking) |
+| Flats | A-101 (owner-occupied, Rs 3,000 base, 2 parking) · A-102 (tenant, Rs 4,000 base, 1 parking) |
 | Administrator | `admin@test.local` |
 | Residents | `resident@test.local` (owner of A-101) · `resident2@test.local` (tenant of A-102) |
 | Guard | `guard@test.local` · Main Gate |
 | Technician | `tech@test.local` · Plumbing |
-| Amenity | Test Clubhouse · 08:00–20:00 · 60-min slots · ₹500 · capacity 50 · cancel window 4 h |
+| Amenity | Test Clubhouse · 08:00–20:00 · 60-min slots · Rs 500 · capacity 50 · cancel window 4 h |
 | Password | `Test@12345` (bcrypt cost 4 — fast, since hashing strength is tested separately) |
 
 `resetDatabase()` truncates every table between files, so no test can depend on
@@ -255,7 +255,7 @@ The seed uses a fixed pseudo-random seed, so every run produces identical data.
 
 | File | Covers |
 |---|---|
-| `utils.test.ts` | Currency, Indian number grouping, enum humanising, initials, minute→label, **local-time date input (no UTC day-shift)**, truncation |
+| `utils.test.ts` | Currency, number grouping, enum humanising, initials, minute→label, **local-time date input (no UTC day-shift)**, truncation |
 | `rbac.test.ts` | Protected prefixes, lookalike prefixes (`/administration` ≠ `/admin`), per-role route access, admin cross-role observation, permission matrix, role landing pages |
 | `validations.test.ts` | Phone, vehicle plate normalisation, password strength, login identifier, gate-pass windows, complaint length, poll option uniqueness, amenity slot divisibility |
 | `qr-and-sla.test.ts` | QR payload round-trip, bare/URL/prefixed code parsing, SLA due dates, SLA state transitions |

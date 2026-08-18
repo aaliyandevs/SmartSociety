@@ -69,7 +69,7 @@ function SectionCard({ section }: { section: SitemapSection }) {
   const pageCount = section.groups.reduce((sum, group) => sum + group.links.length, 0);
 
   return (
-    <div className={cn('rounded-xl border-2 bg-card shadow-sm', meta.ring)}>
+    <div className={cn('rounded-xl border-2 bg-card shadow-sm transition-shadow hover:shadow-md', meta.ring)}>
       {/* Branch header */}
       <div className="flex items-start gap-3 border-b border-border p-4">
         <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted', meta.accent)}>

@@ -166,7 +166,7 @@ export default async function GatePassDetailPage({ params }: { params: Promise<{
                 <Button asChild variant="outline" size="sm">
                   <a
                     href={`sms:${pass.visitor.phone}?body=${encodeURIComponent(
-                      `Your gate pass for flat ${pass.flat.block.name}-${pass.flat.flatNumber}: gate code ${pass.gateCode}, valid until ${pass.validUntil.toLocaleString('en-IN')}.`,
+                      `Your gate pass for flat ${pass.flat.block.name}-${pass.flat.flatNumber}: gate code ${pass.gateCode}, valid until ${pass.validUntil.toLocaleString('en-PK')}.`,
                     )}`}
                   >
                     Send the code by SMS

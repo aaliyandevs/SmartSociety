@@ -74,11 +74,13 @@ export default async function LoginPage({
 
         <div className="flex flex-1 items-center justify-center py-10">
           <div className="w-full max-w-sm">
-            <span className="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <KeyRound className="size-5" aria-hidden />
-            </span>
-            <h1 className="mt-5 text-2xl font-semibold tracking-tight">Sign in to SmartSociety</h1>
-            <p className="mt-1.5 text-sm text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                <KeyRound className="size-5" aria-hidden />
+              </span>
+              <h1 className="text-2xl font-semibold tracking-tight">Sign in to SmartSociety</h1>
+            </div>
+            <p className="mt-3 text-sm text-muted-foreground">
               Use the email address or username registered with the society office.
             </p>
 

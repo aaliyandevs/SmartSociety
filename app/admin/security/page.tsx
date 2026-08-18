@@ -85,7 +85,7 @@ export default async function AdminSecurityPage({
     const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - index);
     const next = new Date(day.getTime() + 86_400_000);
     days.push({
-      label: day.toLocaleDateString('en-IN', { weekday: 'short' }),
+      label: day.toLocaleDateString('en-PK', { weekday: 'short' }),
       entries: weekLogs.filter((log) => log.entryAt && log.entryAt >= day && log.entryAt < next).length,
       exits: weekLogs.filter((log) => log.exitAt && log.exitAt >= day && log.exitAt < next).length,
     });

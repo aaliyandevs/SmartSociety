@@ -187,7 +187,7 @@ export function StaffManager({ staff }: { staff?: StaffFormValues }) {
                   name="phone"
                   inputMode="numeric"
                   required
-                  maxLength={10}
+                  maxLength={11}
                   defaultValue={staff?.phone}
                 />
               </Field>

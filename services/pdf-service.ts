@@ -25,16 +25,16 @@ const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
 
 /** WinAnsi (the standard-font encoding) has no rupee glyph — spell it out. */
 const money = (value: number) =>
-  `Rs. ${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
+  `Rs. ${new Intl.NumberFormat('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
 
 const formatDate = (date: Date | null | undefined) =>
   date
-    ? new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
+    ? new Intl.DateTimeFormat('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
     : '—';
 
 const formatDateTime = (date: Date | null | undefined) =>
   date
-    ? new Intl.DateTimeFormat('en-IN', {
+    ? new Intl.DateTimeFormat('en-PK', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
@@ -101,7 +101,7 @@ export async function buildReceiptPdf(data: ReceiptData): Promise<Uint8Array> {
   const outstanding = Number((totalAmount - paidAmount).toFixed(2));
   const primary = bill.flat.residents[0];
   const flatLabel = `${bill.flat.block.name}-${bill.flat.flatNumber}`;
-  const period = new Date(bill.periodYear, bill.periodMonth - 1, 1).toLocaleDateString('en-IN', {
+  const period = new Date(bill.periodYear, bill.periodMonth - 1, 1).toLocaleDateString('en-PK', {
     month: 'long',
     year: 'numeric',
   });

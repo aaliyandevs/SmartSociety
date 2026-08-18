@@ -5,15 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const INR = new Intl.NumberFormat('en-IN', {
+const PKR = new Intl.NumberFormat('en-PK', {
   style: 'currency',
-  currency: 'INR',
+  currency: 'PKR',
   maximumFractionDigits: 2,
 });
 
-const INR_COMPACT = new Intl.NumberFormat('en-IN', {
+const PKR_COMPACT = new Intl.NumberFormat('en-PK', {
   style: 'currency',
-  currency: 'INR',
+  currency: 'PKR',
   notation: 'compact',
   maximumFractionDigits: 1,
 });
@@ -29,29 +29,29 @@ export function toNumber(value: Numeric): number {
 }
 
 export function formatCurrency(value: Numeric): string {
-  return INR.format(toNumber(value));
+  return PKR.format(toNumber(value));
 }
 
 export function formatCompactCurrency(value: Numeric): string {
-  return INR_COMPACT.format(toNumber(value));
+  return PKR_COMPACT.format(toNumber(value));
 }
 
 export function formatNumber(value: Numeric): string {
-  return new Intl.NumberFormat('en-IN').format(toNumber(value));
+  return new Intl.NumberFormat('en-PK').format(toNumber(value));
 }
 
 export function formatDate(value: Date | string | null | undefined): string {
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+  return new Intl.DateTimeFormat('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 }
 
 export function formatDateTime(value: Date | string | null | undefined): string {
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('en-IN', {
+  return new Intl.DateTimeFormat('en-PK', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -65,7 +65,7 @@ export function formatTime(value: Date | string | null | undefined): string {
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).format(date);
+  return new Intl.DateTimeFormat('en-PK', { hour: '2-digit', minute: '2-digit', hour12: true }).format(date);
 }
 
 /** "2 hours ago" / "in 3 days" — used across timelines and SLA badges. */

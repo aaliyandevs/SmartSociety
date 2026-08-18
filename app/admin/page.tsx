@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
-  BadgeIndianRupee,
+  Banknote,
   Building2,
   CalendarRange,
   DoorOpen,
@@ -104,7 +104,7 @@ export default async function AdminDashboardPage() {
           label="Outstanding dues"
           value={formatCurrency(data.collection.outstanding)}
           hint={`${data.collection.collectionRate}% collected of ${formatCurrency(data.collection.billed)}`}
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           tone={data.collection.outstanding > 0 ? 'warning' : 'success'}
           href="/admin/bills"
         />
@@ -146,7 +146,7 @@ export default async function AdminDashboardPage() {
           label="Collection this cycle"
           value={formatCurrency(data.collection.collected)}
           hint={`${data.collection.billCount} invoices raised`}
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           tone="success"
           href="/admin/payments"
         />
@@ -333,7 +333,7 @@ export default async function AdminDashboardPage() {
 
             {data.topDefaulters.length === 0 ? (
               <EmptyState
-                icon={BadgeIndianRupee}
+                icon={Banknote}
                 title="Everything is settled"
                 description="No invoice is past its due date right now."
                 className="border-0 bg-transparent py-8"

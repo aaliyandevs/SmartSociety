@@ -143,7 +143,7 @@ export function FamilyMembers({ members }: { members: FamilyMemberView[] }) {
                     id="phone"
                     name="phone"
                     inputMode="numeric"
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={editing?.phone ?? ''}
                   />
                 </Field>

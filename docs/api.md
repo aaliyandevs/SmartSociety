@@ -81,7 +81,7 @@ Revokes the session row, clears the cookie, audits `auth.logout`, redirects to
 | Field | Type | Rules |
 |---|---|---|
 | `visitorName` | string | 2–80 chars |
-| `visitorPhone` | string | 10-digit Indian mobile |
+| `visitorPhone` | string | 11-digit Pakistani mobile |
 | `visitorType` | enum | GUEST · DELIVERY · CAB · VENDOR · SERVICE · OTHER |
 | `vehicleNumber` | string? | Normalised, e.g. `MH12AB1234` |
 | `company` | string? | ≤ 80 chars |
@@ -310,7 +310,7 @@ Polled every 45 s by the notification bell and every 30 s by the alert banner.
     {
       "id": "clx…", "type": "BILL_GENERATED",
       "title": "Your maintenance bill is ready",
-      "body": "Invoice INV-202603-A101 for ₹4,430.00 is due on 15/03/2026.",
+      "body": "Invoice INV-202603-A101 for Rs 4,430.00 is due on 15/03/2026.",
       "link": "/resident/bills", "isUrgent": false,
       "readAt": null, "createdAt": "2026-03-01T09:00:00.000Z"
     }

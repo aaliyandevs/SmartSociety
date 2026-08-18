@@ -64,6 +64,32 @@ export function canAccessPath(role: Role, pathname: string): boolean {
   return allowed === null || allowed.includes(role);
 }
 
+/**
+ * Where to send a user immediately after signing in.
+ *
+ * A requested same-origin `next` path (typically set by middleware when it
+ * bounced an unauthenticated visitor to `/login`) is honoured only if it
+ * falls within the signing-in role's *own* section of the app (its
+ * `ROLE_HOME` prefix). A plain `canAccessPath` check is not enough here: some
+ * routes are legitimately shared across roles for browsing once signed in
+ * (`/guard` is reachable by both GUARD and ADMIN), but that does not mean an
+ * administrator who happens to land on `/login?next=/guard` — say, from a
+ * stale bookmark or a link typed before authenticating — should be dropped
+ * onto the guard console instead of their own dashboard. Restricting `next`
+ * to the caller's own area keeps genuine deep links working (e.g. a resident
+ * bounced from `/resident/bills/123`) while eliminating that cross-role
+ * redirect.
+ */
+export function resolveLoginDestination(role: Role, requestedNext?: string | null): string {
+  const home = ROLE_HOME[role];
+  const isSafeRelativePath = Boolean(
+    requestedNext && requestedNext.startsWith('/') && !requestedNext.startsWith('//'),
+  );
+  const staysWithinOwnArea =
+    isSafeRelativePath && (requestedNext === home || (requestedNext as string).startsWith(`${home}/`));
+  return staysWithinOwnArea ? (requestedNext as string) : home;
+}
+
 // ── Fine-grained permissions ──────────────────────────────────────────────────
 
 export const PERMISSIONS = [

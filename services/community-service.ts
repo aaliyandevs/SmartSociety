@@ -90,7 +90,7 @@ export async function castVote(input: { pollId: string; optionId: string; reside
   if (poll.status === 'DRAFT') throw new ConflictError('This poll has not opened yet.');
   if (poll.status === 'CLOSED' || poll.endsAt < now) throw new ConflictError('This poll has closed.');
   if (poll.startsAt > now) {
-    throw new ConflictError(`Voting opens on ${poll.startsAt.toLocaleString('en-IN')}.`);
+    throw new ConflictError(`Voting opens on ${poll.startsAt.toLocaleString('en-PK')}.`);
   }
 
   const option = await prisma.pollOption.findFirst({

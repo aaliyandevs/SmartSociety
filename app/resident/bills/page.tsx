@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { BadgeIndianRupee, Download, FileText } from 'lucide-react';
+import { Banknote, Download, FileText } from 'lucide-react';
 
 import { PageHeader } from '@/components/shared/page-header';
 import { StatCard } from '@/components/shared/stat-card';
@@ -63,7 +63,7 @@ export default async function ResidentBillsPage() {
           label="Outstanding"
           value={formatCurrency(outstanding)}
           hint={outstanding > 0 ? 'Pay from any invoice below' : 'All settled — thank you'}
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           tone={outstanding > 0 ? 'warning' : 'success'}
         />
         <StatCard label="Total paid" value={formatCurrency(paid)} hint="Across all invoices" tone="success" />
@@ -72,7 +72,7 @@ export default async function ResidentBillsPage() {
 
       {bills.length === 0 ? (
         <EmptyState
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           title="No invoices yet"
           description="Maintenance invoices raised by the society office will appear here."
         />

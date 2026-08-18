@@ -385,7 +385,7 @@ export async function getMonthlyCollectionTrend(months = 6) {
   return periods.map((period) => {
     const entry = lookup.get(`${period.year}-${period.month}`) ?? { billed: 0, collected: 0 };
     return {
-      label: new Date(period.year, period.month - 1, 1).toLocaleDateString('en-IN', {
+      label: new Date(period.year, period.month - 1, 1).toLocaleDateString('en-PK', {
         month: 'short',
       }),
       year: period.year,

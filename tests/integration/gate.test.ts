@@ -23,8 +23,8 @@ async function makePass(overrides: Partial<Parameters<typeof createGatePass>[0]>
   return createGatePass({
     residentId: baseline.resident.residentId,
     flatId: baseline.flatA.id,
-    visitorName: 'Rahul Mehta',
-    visitorPhone: '9876543210',
+    visitorName: 'Ahmed Raza',
+    visitorPhone: '03001234567',
     visitorType: 'GUEST',
     validFrom: hoursFromNow(-1),
     validUntil: hoursFromNow(4),
@@ -82,7 +82,7 @@ describe('verifying a pass', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.pass.visitor.name).toBe('Rahul Mehta');
+      expect(result.pass.visitor.name).toBe('Ahmed Raza');
       expect(result.pass.flat.label).toBe('A-101');
       expect(result.pass.host.name).toBe('Test Resident');
     }
@@ -288,7 +288,7 @@ describe('walk-in visitors', () => {
       guardId: baseline.guard.userId,
       flatId: baseline.flatB.id,
       name: 'Courier Person',
-      phone: '9812345678',
+      phone: '03005345678',
       visitorType: 'DELIVERY',
       company: 'BlueDart',
       gate: 'Service Gate',
@@ -306,7 +306,7 @@ describe('walk-in visitors', () => {
         guardId: baseline.guard.userId,
         flatId: 'not-a-real-flat',
         name: 'Nobody',
-        phone: '9812345678',
+        phone: '03005345678',
         visitorType: 'GUEST',
         gate: 'Main Gate',
       }),
@@ -320,7 +320,7 @@ describe('housekeeping', () => {
       guardId: baseline.guard.userId,
       flatId: baseline.flatA.id,
       name: 'Overstaying Vendor',
-      phone: '9812345670',
+      phone: '03005345670',
       visitorType: 'VENDOR',
       gate: 'Service Gate',
       expectedExitAt: hoursFromNow(-2),

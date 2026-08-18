@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
-  BadgeIndianRupee,
+  Banknote,
   CalendarCheck,
   ClipboardCheck,
   Database,
@@ -25,7 +25,6 @@ import {
 
 import { BrandLogo, BrandMark } from '@/components/shared/brand';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
-import { SitemapView } from '@/components/marketing/sitemap-view';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -45,7 +44,7 @@ const NAV_LINKS = [
   { label: 'How it works', href: '#how-it-works' },
   { label: 'For each role', href: '#roles' },
   { label: 'Security', href: '#security' },
-  { label: 'Sitemap', href: '#sitemap' },
+  { label: 'Sitemap', href: '/sitemap' },
 ];
 
 const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
@@ -60,7 +59,7 @@ const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
     body: 'Every entry, exit and refusal is recorded with the gate, the verification method and the guard on duty. Overstaying vendors are flagged automatically.',
   },
   {
-    icon: BadgeIndianRupee,
+    icon: Banknote,
     title: 'Maintenance billing & collection',
     body: 'Generate the monthly billing run for every occupied flat, itemise water, security and repair charges, apply overdue penalties and watch the collection rate move.',
   },
@@ -261,7 +260,7 @@ export default function HomePage() {
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
-                    <a href="#sitemap">See the sitemap</a>
+                    <Link href="/sitemap">See the sitemap</Link>
                   </Button>
                 </div>
 
@@ -291,7 +290,7 @@ export default function HomePage() {
 
                   <div className="grid grid-cols-2 gap-3 pt-4">
                     {[
-                      { label: 'Outstanding dues', value: '₹1.42 L', tone: 'text-warning-foreground dark:text-warning' },
+                      { label: 'Outstanding dues', value: 'Rs 142K', tone: 'text-warning-foreground dark:text-warning' },
                       { label: 'Visitors today', value: '38', tone: 'text-foreground' },
                       { label: 'Open tickets', value: '12', tone: 'text-foreground' },
                       { label: 'Collection rate', value: '87%', tone: 'text-success' },
@@ -350,8 +349,11 @@ export default function HomePage() {
               {FEATURES.map((feature) => {
                 const Icon = feature.icon;
                 return (
-                  <Card key={feature.title} className="transition-shadow hover:shadow-md">
-                    <CardContent className="p-5">
+                  <Card
+                    key={feature.title}
+                    className="transition-shadow hover:border-primary/40 hover:shadow-md"
+                  >
+                    <CardContent className="p-5 sm:p-6">
                       <span className="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
                         <Icon className="size-5" aria-hidden />
                       </span>
@@ -380,7 +382,10 @@ export default function HomePage() {
 
             <ol className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
               {JOURNEY.map((item) => (
-                <li key={item.step} className="relative rounded-xl border border-border bg-card p-5">
+                <li
+                  key={item.step}
+                  className="relative rounded-xl border border-border bg-card p-5 transition-shadow hover:border-primary/40 hover:shadow-md"
+                >
                   <span className="tabular text-3xl font-semibold text-primary/25">{item.step}</span>
                   <h3 className="mt-2 font-semibold leading-tight">{item.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
@@ -408,8 +413,11 @@ export default function HomePage() {
               {ROLE_CARDS.map((card) => {
                 const Icon = card.icon;
                 return (
-                  <Card key={card.role} className="flex h-full flex-col">
-                    <CardContent className="flex h-full flex-col p-5">
+                  <Card
+                    key={card.role}
+                    className="flex h-full flex-col transition-shadow hover:border-primary/40 hover:shadow-md"
+                  >
+                    <CardContent className="flex h-full flex-col p-5 sm:p-6">
                       <span className="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
                         <Icon className="size-5" aria-hidden />
                       </span>
@@ -451,7 +459,10 @@ export default function HomePage() {
               {SECURITY_POINTS.map((point) => {
                 const Icon = point.icon;
                 return (
-                  <div key={point.title} className="rounded-xl border border-border bg-card p-5">
+                  <div
+                    key={point.title}
+                    className="rounded-xl border border-border bg-card p-5 transition-shadow hover:border-primary/40 hover:shadow-md"
+                  >
                     <span className="flex size-10 items-center justify-center rounded-lg bg-primary-soft text-primary">
                       <Icon className="size-5" aria-hidden />
                     </span>
@@ -460,33 +471,6 @@ export default function HomePage() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Sitemap (required on the home page by the SRS) ── */}
-        <section id="sitemap" className="border-b border-border py-16 sm:py-20">
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Sitemap</p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-                Every screen in the application
-              </h2>
-              <p className="mt-3 text-muted-foreground">
-                {SITEMAP_PAGE_COUNT} screens across a public area and four role consoles. Every entry below
-                is a live link — sign in with the matching demo account to open it.
-              </p>
-            </div>
-
-            <SitemapView className="mt-10" />
-
-            <div className="mt-8 flex justify-center">
-              <Button asChild variant="outline">
-                <Link href="/sitemap">
-                  Open the full-page sitemap
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
             </div>
           </div>
         </section>

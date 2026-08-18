@@ -46,7 +46,7 @@ export default async function GuardDashboardPage() {
       <PageHeader
         eyebrow={user.gateAssignment ?? 'Security'}
         title="Gate console"
-        description={`${new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} · signed in as ${user.fullName}`}
+        description={`${new Date().toLocaleDateString('en-PK', { weekday: 'long', day: 'numeric', month: 'long' })} · signed in as ${user.fullName}`}
       />
 
       {data.activeAlert ? (
@@ -60,7 +60,11 @@ export default async function GuardDashboardPage() {
 
       {/* ── The two actions a guard needs most ── */}
       <section className="grid gap-3 sm:grid-cols-2">
-        <Button asChild size="xl" className="h-24 justify-start gap-4 text-left">
+        <Button
+          asChild
+          size="xl"
+          className="h-24 justify-start gap-4 text-left transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+        >
           <Link href="/guard/verify">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
               <QrCode className="size-6" aria-hidden />
@@ -74,7 +78,12 @@ export default async function GuardDashboardPage() {
           </Link>
         </Button>
 
-        <Button asChild size="xl" variant="outline" className="h-24 justify-start gap-4 text-left">
+        <Button
+          asChild
+          size="xl"
+          variant="outline"
+          className="h-24 justify-start gap-4 text-left transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+        >
           <Link href="/guard/walk-in">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
               <DoorOpen className="size-6" aria-hidden />
@@ -91,8 +100,19 @@ export default async function GuardDashboardPage() {
 
       {/* ── Today at a glance ── */}
       <section className="grid gap-4 grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Entries today" value={data.entriesToday} icon={UserCheck} tone="info" />
-        <StatCard label="Exits today" value={data.exitsToday} icon={LogOut} />
+        <StatCard
+          label="Entries today"
+          value={data.entriesToday}
+          icon={UserCheck}
+          tone="info"
+          className="transition-shadow hover:border-primary/40 hover:shadow-md"
+        />
+        <StatCard
+          label="Exits today"
+          value={data.exitsToday}
+          icon={LogOut}
+          className="transition-shadow hover:border-primary/40 hover:shadow-md"
+        />
         <StatCard
           label="Inside now"
           value={data.insideNow}
@@ -105,12 +125,13 @@ export default async function GuardDashboardPage() {
           value={data.deniedToday}
           icon={ShieldAlert}
           tone={data.deniedToday > 0 ? 'destructive' : 'default'}
+          className="transition-shadow hover:border-primary/40 hover:shadow-md"
         />
       </section>
 
       {/* ── Overstays first: they need action ── */}
       {data.overstays.length > 0 ? (
-        <Card className="border-destructive/40">
+        <Card className="border-destructive/40 transition-shadow hover:border-destructive/60 hover:shadow-md">
           <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
             <div>
               <CardTitle className="flex items-center gap-2 text-destructive">
@@ -126,7 +147,10 @@ export default async function GuardDashboardPage() {
           <CardContent className="p-0">
             <ul className="divide-y divide-border border-t border-border">
               {data.overstays.map((log) => (
-                <li key={log.id} className="flex flex-wrap items-center gap-3 px-5 py-4">
+                <li
+                  key={log.id}
+                  className="flex flex-wrap items-center gap-3 px-5 py-4 transition-colors hover:bg-muted/40"
+                >
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-medium">{log.visitor.name}</span>
                     <span className="block text-sm text-muted-foreground">
@@ -150,7 +174,7 @@ export default async function GuardDashboardPage() {
 
       <section className="grid gap-4 lg:grid-cols-2">
         {/* ── Expected today ── */}
-        <Card>
+        <Card className="transition-shadow hover:border-primary/40 hover:shadow-md">
           <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
             <div>
               <CardTitle>Expected visitors</CardTitle>
@@ -174,7 +198,10 @@ export default async function GuardDashboardPage() {
             ) : (
               <ul className="divide-y divide-border border-t border-border">
                 {data.expectedToday.slice(0, 6).map((pass) => (
-                  <li key={pass.id} className="flex items-center gap-3 px-5 py-4">
+                  <li
+                    key={pass.id}
+                    className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-muted/40"
+                  >
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-medium">{pass.visitor.name}</span>
                       <span className="block text-sm text-muted-foreground">
@@ -198,7 +225,7 @@ export default async function GuardDashboardPage() {
         </Card>
 
         {/* ── Recent movements ── */}
-        <Card>
+        <Card className="transition-shadow hover:border-primary/40 hover:shadow-md">
           <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
             <div>
               <CardTitle>Recent gate movements</CardTitle>
@@ -217,7 +244,10 @@ export default async function GuardDashboardPage() {
             ) : (
               <ul className="divide-y divide-border border-t border-border">
                 {data.recentActivity.map((log) => (
-                  <li key={log.id} className="flex items-center gap-3 px-5 py-3.5">
+                  <li
+                    key={log.id}
+                    className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-muted/40"
+                  >
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-medium">{log.visitor.name}</span>
                       <span className="block text-xs text-muted-foreground">

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
-  BadgeIndianRupee,
+  Banknote,
   CalendarCheck,
   IdCard,
   LifeBuoy,
@@ -83,7 +83,7 @@ export default async function ResidentDashboardPage() {
               ? `Latest invoice due ${formatDate(dueBill.dueDate)}`
               : 'No invoices raised yet'
           }
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           tone={data.outstanding.amount > 0 ? 'warning' : 'success'}
           href="/resident/bills"
         />
@@ -120,7 +120,7 @@ export default async function ResidentDashboardPage() {
               <CardTitle>Current maintenance bill</CardTitle>
               <CardDescription>
                 {dueBill
-                  ? `${new Date(dueBill.periodYear, dueBill.periodMonth - 1).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })} · ${dueBill.billNumber}`
+                  ? `${new Date(dueBill.periodYear, dueBill.periodMonth - 1).toLocaleDateString('en-PK', { month: 'long', year: 'numeric' })} · ${dueBill.billNumber}`
                   : 'No invoice has been raised for your flat yet.'}
               </CardDescription>
             </div>
@@ -130,7 +130,7 @@ export default async function ResidentDashboardPage() {
           <CardContent>
             {!dueBill ? (
               <EmptyState
-                icon={BadgeIndianRupee}
+                icon={Banknote}
                 title="No bills yet"
                 description="Maintenance invoices raised by the society office will appear here."
               />

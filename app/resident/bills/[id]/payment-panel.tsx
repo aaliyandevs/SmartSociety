@@ -23,9 +23,9 @@ import { idleState } from '@/lib/action-result';
 import { cn, formatCurrency } from '@/lib/utils';
 
 const METHODS: { value: string; label: string; icon: LucideIcon; hint: string }[] = [
-  { value: 'UPI', label: 'UPI', icon: Smartphone, hint: 'GPay, PhonePe, Paytm' },
+  { value: 'UPI', label: 'UPI', icon: Smartphone, hint: 'JazzCash, Easypaisa' },
   { value: 'CARD', label: 'Card', icon: CreditCard, hint: 'Debit or credit' },
-  { value: 'NETBANKING', label: 'Net banking', icon: Landmark, hint: 'Any Indian bank' },
+  { value: 'NETBANKING', label: 'Net banking', icon: Landmark, hint: 'Any Pakistani bank' },
   { value: 'WALLET', label: 'Wallet', icon: Wallet, hint: 'Prepaid balance' },
   { value: 'CASH', label: 'Cash', icon: Banknote, hint: 'At the society office' },
 ];

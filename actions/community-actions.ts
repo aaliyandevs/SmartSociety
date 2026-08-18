@@ -264,7 +264,7 @@ export async function savePollAction(
       await notifyRoles(['RESIDENT'], {
         type: 'POLL_OPENED',
         title: 'New community poll',
-        body: `${created.title} — voting closes ${created.endsAt.toLocaleDateString('en-IN')}.`,
+        body: `${created.title} — voting closes ${created.endsAt.toLocaleDateString('en-PK')}.`,
         link: '/resident/polls',
         entityType: 'Poll',
         entityId: created.id,

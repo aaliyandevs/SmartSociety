@@ -162,7 +162,7 @@ export function SocietySettingsForm({
             name="contactPhone"
             inputMode="numeric"
             required
-            maxLength={10}
+            maxLength={11}
             defaultValue={defaults.contactPhone}
           />
         </Field>

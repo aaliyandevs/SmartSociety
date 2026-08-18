@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth/jwt';
-import { ROLE_HOME, canAccessPath, isProtectedPath } from '@/lib/rbac';
+import { canAccessPath, isProtectedPath } from '@/lib/rbac';
 
 /**
  * Edge-runtime routing guard.
@@ -16,11 +16,6 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE)?.value;
   const secret = process.env.AUTH_SECRET ?? '';
   const claims = token && secret ? await verifySessionToken(token, secret) : null;
-
-  // Signed-in users should not see the login screen again.
-  if (claims && (pathname === '/login' || pathname === '/register')) {
-    return NextResponse.redirect(new URL(ROLE_HOME[claims.role] ?? '/', request.url));
-  }
 
   if (!isProtectedPath(pathname)) {
     return NextResponse.next();

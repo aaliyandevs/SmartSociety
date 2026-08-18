@@ -97,23 +97,23 @@ export function GatePassForm() {
           required
           errors={fieldErrors(state, 'visitorName')}
         >
-          <Input id="visitorName" name="visitorName" placeholder="Rahul Mehta" required maxLength={80} />
+          <Input id="visitorName" name="visitorName" placeholder="Ahmed Raza" required maxLength={80} />
         </Field>
 
         <Field
           label="Mobile number"
           htmlFor="visitorPhone"
           required
-          hint="10-digit Indian mobile number"
+          hint="11-digit Pakistani mobile number"
           errors={fieldErrors(state, 'visitorPhone')}
         >
           <Input
             id="visitorPhone"
             name="visitorPhone"
             inputMode="numeric"
-            placeholder="9876543210"
+            placeholder="03001234567"
             required
-            maxLength={10}
+            maxLength={11}
           />
         </Field>
       </FormGrid>
@@ -128,7 +128,7 @@ export function GatePassForm() {
           <Input
             id="vehicleNumber"
             name="vehicleNumber"
-            placeholder="MH12AB1234"
+            placeholder="LEA1234"
             className="uppercase"
             maxLength={14}
           />

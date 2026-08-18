@@ -72,7 +72,7 @@ export function ProfileForm({
             name="phone"
             inputMode="numeric"
             required
-            maxLength={10}
+            maxLength={11}
             defaultValue={defaults.phone}
             autoComplete="tel"
           />
@@ -89,7 +89,7 @@ export function ProfileForm({
               id="alternatePhone"
               name="alternatePhone"
               inputMode="numeric"
-              maxLength={10}
+              maxLength={11}
               defaultValue={defaults.alternatePhone}
             />
           </Field>

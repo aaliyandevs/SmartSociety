@@ -7,7 +7,7 @@ import { type ActionState, runAction, success } from '@/lib/action-result';
 import { AUDIT_ACTIONS, recordAudit } from '@/lib/audit';
 import { createSession, destroySession, requestContext, requireUser } from '@/lib/auth/session';
 import { enforceRateLimit } from '@/lib/rate-limit';
-import { ROLE_HOME } from '@/lib/rbac';
+import { resolveLoginDestination } from '@/lib/rbac';
 import { changePasswordSchema, loginSchema } from '@/lib/validations/auth';
 import { authenticate, changePassword } from '@/services/auth-service';
 
@@ -48,12 +48,7 @@ export async function loginAction(
       actor: { id: user.id, name: user.fullName, role: user.role },
     });
 
-    // Only same-origin relative paths are honoured, to avoid an open redirect.
-    const requested = input.next;
-    outcome.destination =
-      requested && requested.startsWith('/') && !requested.startsWith('//')
-        ? requested
-        : ROLE_HOME[user.role];
+    outcome.destination = resolveLoginDestination(user.role, input.next);
 
     return success('Signed in.');
   });

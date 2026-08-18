@@ -18,7 +18,7 @@ test.describe('resident journey', () => {
 
     await page.getByRole('button', { name: /Guest/ }).first().click();
     await page.getByLabel('Visitor name').fill('E2E Test Visitor');
-    await page.getByLabel('Mobile number').fill('9876500011');
+    await page.getByLabel('Mobile number').fill('03001234561');
     await page.getByLabel('Purpose of visit').fill('End-to-end test visit');
 
     await page.getByRole('button', { name: 'Create pass' }).click();

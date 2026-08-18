@@ -9,22 +9,22 @@ import { amenitySchema } from '@/lib/validations/amenity';
 
 describe('input validation', () => {
   describe('phone numbers', () => {
-    it('accepts a valid Indian mobile number', () => {
-      expect(phoneSchema.safeParse('9876543210').success).toBe(true);
+    it('accepts a valid Pakistani mobile number', () => {
+      expect(phoneSchema.safeParse('03001234567').success).toBe(true);
     });
 
     it('rejects wrong lengths and invalid leading digits', () => {
       expect(phoneSchema.safeParse('123456789').success).toBe(false);
-      expect(phoneSchema.safeParse('12345678901').success).toBe(false);
+      expect(phoneSchema.safeParse('123456789012').success).toBe(false);
       expect(phoneSchema.safeParse('1234567890').success).toBe(false);
-      expect(phoneSchema.safeParse('98765abcde').success).toBe(false);
+      expect(phoneSchema.safeParse('0300abcdefg').success).toBe(false);
     });
   });
 
   describe('vehicle registration numbers', () => {
     it('normalises spacing and case', () => {
-      expect(vehicleNumberSchema.parse('mh 12 ab 1234')).toBe('MH12AB1234');
-      expect(vehicleNumberSchema.parse('MH-12-AB-1234')).toBe('MH12AB1234');
+      expect(vehicleNumberSchema.parse('lea 1234')).toBe('LEA1234');
+      expect(vehicleNumberSchema.parse('LEA-1234')).toBe('LEA1234');
     });
 
     it('rejects an obviously invalid plate', () => {
@@ -56,8 +56,8 @@ describe('input validation', () => {
 
   describe('gate passes', () => {
     const base = {
-      visitorName: 'Rahul Mehta',
-      visitorPhone: '9876543210',
+      visitorName: 'Ahmed Raza',
+      visitorPhone: '03001234567',
       visitorType: 'GUEST' as const,
       maxEntries: 1,
     };

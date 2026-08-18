@@ -82,15 +82,15 @@ const hoursAhead = (hours: number) => new Date(NOW.getTime() + hours * 3_600_000
 // ── Reference data ────────────────────────────────────────────────────────────
 
 const FIRST_NAMES = [
-  'Aarav', 'Vivaan', 'Aditya', 'Ananya', 'Diya', 'Ishaan', 'Kabir', 'Meera', 'Nikhil', 'Priya',
-  'Rohan', 'Sanya', 'Tanvi', 'Varun', 'Zoya', 'Arjun', 'Kavya', 'Manish', 'Neha', 'Rahul',
-  'Shreya', 'Siddharth', 'Pooja', 'Vikram', 'Anjali', 'Deepak', 'Farah', 'Gaurav', 'Harini', 'Imran',
-  'Jyoti', 'Karthik', 'Lakshmi', 'Mohit', 'Nandini', 'Omkar',
+  'Ahmed', 'Ali', 'Bilal', 'Fatima', 'Ayesha', 'Hamza', 'Zain', 'Sana', 'Usman', 'Mariam',
+  'Faisal', 'Hira', 'Imran', 'Sadia', 'Kamran', 'Amna', 'Osman', 'Nadia', 'Tariq', 'Rabia',
+  'Saima', 'Asad', 'Zainab', 'Danish', 'Kiran', 'Junaid', 'Noor', 'Kashif', 'Sara', 'Naveed',
+  'Iqra', 'Rizwan', 'Maria', 'Fahad', 'Bushra', 'Haris',
 ];
 
 const LAST_NAMES = [
-  'Sharma', 'Verma', 'Patel', 'Reddy', 'Nair', 'Iyer', 'Mehta', 'Kulkarni', 'Joshi', 'Desai',
-  'Chopra', 'Bansal', 'Rao', 'Gupta', 'Khan', 'Sethi', 'Malhotra', 'Pillai', 'Bose', 'Chauhan',
+  'Khan', 'Malik', 'Sheikh', 'Butt', 'Awan', 'Chaudhry', 'Qureshi', 'Raza', 'Abbasi', 'Baig',
+  'Farooqi', 'Hashmi', 'Siddiqui', 'Ansari', 'Bhatti', 'Cheema', 'Gill', 'Mirza', 'Javed', 'Rashid',
 ];
 
 const OCCUPATIONS = [
@@ -100,21 +100,21 @@ const OCCUPATIONS = [
 ];
 
 const VEHICLE_MAKES = [
-  { make: 'Maruti Suzuki', models: ['Swift', 'Baleno', 'Brezza'], type: VehicleType.CAR },
-  { make: 'Hyundai', models: ['i20', 'Creta', 'Venue'], type: VehicleType.CAR },
-  { make: 'Tata', models: ['Nexon', 'Punch', 'Altroz'], type: VehicleType.CAR },
-  { make: 'Honda', models: ['City', 'Amaze'], type: VehicleType.CAR },
-  { make: 'Honda', models: ['Activa 6G', 'Dio'], type: VehicleType.SCOOTER },
-  { make: 'Royal Enfield', models: ['Classic 350', 'Hunter 350'], type: VehicleType.BIKE },
-  { make: 'Bajaj', models: ['Pulsar 150', 'Chetak'], type: VehicleType.BIKE },
+  { make: 'Suzuki', models: ['Alto', 'WagonR', 'Cultus'], type: VehicleType.CAR },
+  { make: 'Toyota', models: ['Corolla', 'Yaris', 'Fortuner'], type: VehicleType.CAR },
+  { make: 'Honda', models: ['City', 'Civic', 'BR-V'], type: VehicleType.CAR },
+  { make: 'Kia', models: ['Sportage', 'Picanto'], type: VehicleType.CAR },
+  { make: 'Honda', models: ['CD 70', 'CG 125'], type: VehicleType.BIKE },
+  { make: 'Yamaha', models: ['YBR 125', 'YB 125Z'], type: VehicleType.BIKE },
+  { make: 'United', models: ['US 125'], type: VehicleType.BIKE },
 ];
 
 const COLORS = ['White', 'Silver', 'Grey', 'Blue', 'Red', 'Black'];
 const RELATIONS = ['Spouse', 'Son', 'Daughter', 'Mother', 'Father', 'Brother', 'Sister'];
 
-const DELIVERY_COMPANIES = ['Amazon', 'Flipkart', 'BlueDart', 'Swiggy', 'Zomato', 'Blinkit', 'DTDC'];
-const CAB_COMPANIES = ['Uber', 'Ola', 'Rapido'];
-const VENDOR_COMPANIES = ['Aqua Pure RO Service', 'UrbanClap Cleaning', 'Sharma Electricals', 'Godrej Pest Control'];
+const DELIVERY_COMPANIES = ['Daraz', 'Foodpanda', 'Cheetay', 'TCS', 'Leopards Courier', 'M&P Express'];
+const CAB_COMPANIES = ['Uber', 'Careem', 'Bykea'];
+const VENDOR_COMPANIES = ['Aqua Pure RO Service', 'Sparkle Home Cleaning', 'Malik Electricals', 'Rentokil Pest Control'];
 
 const GATES = ['Main Gate', 'Service Gate'] as const;
 
@@ -145,9 +145,9 @@ function uniqueGateCode(): string {
   return code;
 }
 
-const phoneFor = (index: number) => `9${String(800_000_000 + index * 137_911).slice(0, 9)}`;
-const plate = (index: number) =>
-  `MH${String(randomInt(1, 48)).padStart(2, '0')}${randomCode(2)}${String(1000 + index).slice(-4)}`;
+const phoneFor = (index: number) => `03${String(100_000_000 + index * 137_911).slice(-9)}`;
+const PLATE_PREFIXES = ['LEA', 'LEB', 'LES', 'KHI', 'ISL', 'RWP', 'FSD'] as const;
+const plate = (index: number) => `${pick(PLATE_PREFIXES)}${String(1000 + index).slice(-4)}`;
 
 const money = (value: number) => new Prisma.Decimal(value.toFixed(2));
 
@@ -209,14 +209,14 @@ async function main() {
   const society = await prisma.society.create({
     data: {
       name: 'Green Meadows Residency',
-      registrationNo: 'MH/PUN/CHS/2016/48219',
-      addressLine1: 'Survey No. 42, Green Meadows Road',
-      addressLine2: 'Baner',
-      city: 'Pune',
-      state: 'Maharashtra',
-      postalCode: '411045',
+      registrationNo: 'LDA/HS/2016/48219',
+      addressLine1: 'Plot No. 42, Green Meadows Road',
+      addressLine2: 'DHA Phase 5',
+      city: 'Lahore',
+      state: 'Punjab',
+      postalCode: '54000',
       contactEmail: 'office@smartsociety.local',
-      contactPhone: '9822014567',
+      contactPhone: '03001234567',
       penaltyPercent: money(2),
       penaltyGraceDays: 5,
       guidelines: SOCIETY_GUIDELINES,
@@ -288,8 +288,8 @@ async function main() {
       username: 'admin',
       passwordHash: hashes.admin,
       role: Role.ADMIN,
-      fullName: 'Rajesh Deshmukh',
-      phone: '9822014567',
+      fullName: 'Tariq Farooq',
+      phone: '03001234567',
       lastLoginAt: hoursAgo(3),
     },
   });
@@ -300,8 +300,8 @@ async function main() {
       username: 'secretary',
       passwordHash: hashes.shared,
       role: Role.ADMIN,
-      fullName: 'Sunita Kulkarni',
-      phone: '9822014568',
+      fullName: 'Sadia Iqbal',
+      phone: '03001234568',
       lastLoginAt: daysAgo(1, 11),
     },
   });
@@ -326,7 +326,7 @@ async function main() {
     const isDemoResident = index === 0;
     const firstName = FIRST_NAMES[index % FIRST_NAMES.length];
     const lastName = LAST_NAMES[(index * 3) % LAST_NAMES.length];
-    const fullName = isDemoResident ? 'Ananya Sharma' : `${firstName} ${lastName}`;
+    const fullName = `${firstName} ${lastName}`;
     const email = isDemoResident
       ? 'resident@smartsociety.local'
       : `${firstName}.${lastName}${index}`.toLowerCase() + '@smartsociety.local';
@@ -457,9 +457,9 @@ async function main() {
   // ── Security guards ────────────────────────────────────────────────────────
 
   const GUARD_SPECS = [
-    { name: 'Ramesh Yadav', email: 'guard@smartsociety.local', username: 'guard', gate: 'Main Gate', shift: 'Morning (06:00 – 14:00)', hash: hashes.guard },
-    { name: 'Suresh Pawar', email: 'guard2@smartsociety.local', username: 'guard2', gate: 'Main Gate', shift: 'Evening (14:00 – 22:00)', hash: hashes.shared },
-    { name: 'Dinesh Jadhav', email: 'guard3@smartsociety.local', username: 'guard3', gate: 'Service Gate', shift: 'Night (22:00 – 06:00)', hash: hashes.shared },
+    { name: 'Shahid Mehmood', email: 'guard@smartsociety.local', username: 'guard', gate: 'Main Gate', shift: 'Morning (06:00 – 14:00)', hash: hashes.guard },
+    { name: 'Waqas Ahmed', email: 'guard2@smartsociety.local', username: 'guard2', gate: 'Main Gate', shift: 'Evening (14:00 – 22:00)', hash: hashes.shared },
+    { name: 'Arif Hussain', email: 'guard3@smartsociety.local', username: 'guard3', gate: 'Service Gate', shift: 'Night (22:00 – 06:00)', hash: hashes.shared },
   ];
 
   const guards = [];
@@ -493,12 +493,12 @@ async function main() {
   // ── Maintenance staff ──────────────────────────────────────────────────────
 
   const STAFF_SPECS = [
-    { name: 'Mahesh Gaikwad', email: 'maintenance@smartsociety.local', username: 'maintenance', dept: StaffDepartment.PLUMBING, designation: 'Senior Plumber', skills: ['Leak repair', 'Pipe fitting', 'Water pump'], hash: hashes.maintenance },
-    { name: 'Anil Shinde', email: 'electrician@smartsociety.local', username: 'electrician', dept: StaffDepartment.ELECTRICAL, designation: 'Electrician', skills: ['Wiring', 'DB repair', 'Lighting'], hash: hashes.shared },
-    { name: 'Prakash More', email: 'lift@smartsociety.local', username: 'lifttech', dept: StaffDepartment.ELEVATOR, designation: 'Lift Technician', skills: ['Elevator servicing', 'Door alignment'], hash: hashes.shared },
-    { name: 'Kavita Salunkhe', email: 'housekeeping@smartsociety.local', username: 'housekeeping', dept: StaffDepartment.HOUSEKEEPING, designation: 'Housekeeping Supervisor', skills: ['Deep cleaning', 'Waste management'], hash: hashes.shared },
-    { name: 'Ravi Bhosale', email: 'gardening@smartsociety.local', username: 'gardener', dept: StaffDepartment.GARDENING, designation: 'Head Gardener', skills: ['Landscaping', 'Irrigation'], hash: hashes.shared },
-    { name: 'Sameer Kadam', email: 'handyman@smartsociety.local', username: 'handyman', dept: StaffDepartment.GENERAL, designation: 'Multi-skill Technician', skills: ['Carpentry', 'Pest control', 'General repairs'], hash: hashes.shared },
+    { name: 'Rashid Mahmood', email: 'maintenance@smartsociety.local', username: 'maintenance', dept: StaffDepartment.PLUMBING, designation: 'Senior Plumber', skills: ['Leak repair', 'Pipe fitting', 'Water pump'], hash: hashes.maintenance },
+    { name: 'Zulfiqar Ali', email: 'electrician@smartsociety.local', username: 'electrician', dept: StaffDepartment.ELECTRICAL, designation: 'Electrician', skills: ['Wiring', 'DB repair', 'Lighting'], hash: hashes.shared },
+    { name: 'Nasir Iqbal', email: 'lift@smartsociety.local', username: 'lifttech', dept: StaffDepartment.ELEVATOR, designation: 'Lift Technician', skills: ['Elevator servicing', 'Door alignment'], hash: hashes.shared },
+    { name: 'Nasreen Akhtar', email: 'housekeeping@smartsociety.local', username: 'housekeeping', dept: StaffDepartment.HOUSEKEEPING, designation: 'Housekeeping Supervisor', skills: ['Deep cleaning', 'Waste management'], hash: hashes.shared },
+    { name: 'Ghulam Rasool', email: 'gardening@smartsociety.local', username: 'gardener', dept: StaffDepartment.GARDENING, designation: 'Head Gardener', skills: ['Landscaping', 'Irrigation'], hash: hashes.shared },
+    { name: 'Imran Sadiq', email: 'handyman@smartsociety.local', username: 'handyman', dept: StaffDepartment.GENERAL, designation: 'Multi-skill Technician', skills: ['Carpentry', 'Pest control', 'General repairs'], hash: hashes.shared },
   ];
 
   const staff = [];
@@ -532,15 +532,15 @@ async function main() {
   // ── Society emergency directory ────────────────────────────────────────────
 
   const DIRECTORY = [
-    { name: 'Society Office', designation: 'Reception & Manager', phone: '9822014567', order: 1 },
-    { name: 'Main Gate Security', designation: 'Security Desk (24×7)', phone: '9822014570', order: 2 },
-    { name: 'Fire Brigade', designation: 'Pune Fire Control Room', phone: '9822010101', order: 3 },
-    { name: 'Ambulance', designation: 'Emergency Medical Response', phone: '9822010208', order: 4 },
-    { name: 'Police Control Room', designation: 'Baner Police Station', phone: '9822010010', order: 5 },
-    { name: 'Sahyadri Multispeciality Hospital', designation: 'Nearest Hospital (2.4 km)', phone: '9822011122', order: 6 },
-    { name: 'Gas Emergency Helpline', designation: 'LPG Leak Response', phone: '9822011612', order: 7 },
-    { name: 'Water Tanker Service', designation: 'Approved Supplier', phone: '9822013344', order: 8 },
-    { name: 'Elevator AMC — Otis Service', designation: 'Lift Breakdown Support', phone: '9822013900', order: 9 },
+    { name: 'Society Office', designation: 'Reception & Manager', phone: '03001234567', order: 1 },
+    { name: 'Main Gate Security', designation: 'Security Desk (24×7)', phone: '03001234570', order: 2 },
+    { name: 'Rescue 1122', designation: 'Lahore Fire & Rescue', phone: '1122', order: 3 },
+    { name: 'Edhi Ambulance Service', designation: 'Emergency Medical Response', phone: '115', order: 4 },
+    { name: 'Police Control Room', designation: 'DHA Phase 5 Police Station', phone: '03001230010', order: 5 },
+    { name: 'Doctors Hospital', designation: 'Nearest Hospital (2.4 km)', phone: '03001231122', order: 6 },
+    { name: 'SNGPL Gas Emergency', designation: 'Gas Leak Response', phone: '1199', order: 7 },
+    { name: 'Water Tanker Service', designation: 'Approved Supplier', phone: '03001233344', order: 8 },
+    { name: 'Elevator AMC — Otis Service', designation: 'Lift Breakdown Support', phone: '03001233900', order: 9 },
   ];
 
   for (const entry of DIRECTORY) {
@@ -947,8 +947,8 @@ async function main() {
         visitorType: type,
         vehicleNumber: type === VisitorType.GUEST || type === VisitorType.CAB ? plate(index + 700) : chance(0.5) ? plate(index + 800) : null,
         company,
-        idProofType: type === VisitorType.VENDOR ? 'Aadhaar' : null,
-        idProofNumber: type === VisitorType.VENDOR ? `XXXX-XXXX-${randomInt(1000, 9999)}` : null,
+        idProofType: type === VisitorType.VENDOR ? 'CNIC' : null,
+        idProofNumber: type === VisitorType.VENDOR ? `XXXXX-XXXXXXX-${randomInt(1, 9)}` : null,
       },
     });
     return { id: visitor.id, flatId: visitor.flatId, name: visitor.name, vehicleNumber: visitor.vehicleNumber };
@@ -1240,9 +1240,9 @@ async function main() {
       pinned: true,
     },
     {
-      title: 'Diwali celebration and rangoli competition',
+      title: 'Eid Milan party on the central lawn',
       content:
-        'The cultural committee invites all families to the Diwali celebration on the central lawn. The evening will include a rangoli competition (registration at the society office), a children\'s lamp-decoration contest, and community dinner. Please avoid crackers near parked vehicles and the garden area.',
+        'The cultural committee invites all families to an Eid Milan gathering on the central lawn. The evening will include a children\'s decoration contest, group photos and a community dinner. Please avoid parking near the garden area during setup.',
       category: NoticeCategory.EVENT,
       priority: NoticePriority.NORMAL,
       daysAgo: 14,
@@ -1320,7 +1320,7 @@ async function main() {
     {
       title: 'Should the society install rooftop solar panels?',
       description:
-        'The committee has received a proposal to install a 60 kW rooftop solar plant across all four towers. The estimated cost is ₹34 lakh, funded from the sinking fund, with an expected payback of 4.5 years through reduced common-area electricity bills.',
+        'The committee has received a proposal to install a 60 kW rooftop solar plant across all four towers. The estimated cost is Rs 3.4 million, funded from the sinking fund, with an expected payback of 4.5 years through reduced common-area electricity bills.',
       options: ['Yes — proceed with the installation', 'No — defer for now', 'Need a detailed cost breakdown first'],
       status: PollStatus.ACTIVE,
       startsAgo: 5,
@@ -1342,7 +1342,7 @@ async function main() {
     {
       title: 'Approve the revised gym equipment purchase',
       description:
-        'Proposal to add two treadmills, a rowing machine and a functional trainer to the gymnasium at a cost of ₹6.2 lakh from the amenity fund.',
+        'Proposal to add two treadmills, a rowing machine and a functional trainer to the gymnasium at a cost of Rs 620,000 from the amenity fund.',
       options: ['Approve the full proposal', 'Approve only the treadmills', 'Reject'],
       status: PollStatus.CLOSED,
       startsAgo: 40,
@@ -1495,7 +1495,7 @@ async function main() {
       type: NotificationType.BILL_GENERATED,
       title: 'Your maintenance bill is ready',
       body: demoResidentBill
-        ? `Invoice ${demoResidentBill.billNumber} for ₹${demoResidentBill.totalAmount.toString()} is due on ${demoResidentBill.dueDate.toLocaleDateString('en-IN')}.`
+        ? `Invoice ${demoResidentBill.billNumber} for Rs ${demoResidentBill.totalAmount.toString()} is due on ${demoResidentBill.dueDate.toLocaleDateString('en-PK')}.`
         : 'A new maintenance invoice has been generated for your flat.',
       link: '/resident/bills',
       entityType: 'MaintenanceBill',

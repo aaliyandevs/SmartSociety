@@ -169,10 +169,10 @@ full below.
 | 4 | Database design | ✅ | [database-design.md](./database-design.md) with a full data dictionary |
 | 5 | Test data used in the project | ✅ | [testing.md §11.3](./testing.md#113-test-data) — fixtures and the seeded demo dataset |
 | 6 | Project installation instructions | ✅ | [installation.md](./installation.md) |
-| 7 | User credentials for all types of users with passwords | ✅ | [installation.md §12.5](./installation.md#125-demo-credentials), the README, and the sign-in page |
+| 7 | User credentials for all types of users with passwords | ✅ | [installation.md §12.5](./installation.md#125-demo-credentials), the README, and the landing page (`/`) — removed from the sign-in page itself for a cleaner public-facing screen |
 | 8 | ReadMe listing assumptions, and `.sql` files with database and table definitions | ✅ | [README.md](../README.md) + [assumptions.md](./assumptions.md); `database/schema.sql` |
 | 9 | **Video (.mp4) demonstrating the working application** | ❌ | **Not produced.** A screen recording is not a software artefact and cannot be generated from a codebase. Everything it would show is available to record: `npm run setup && npm run dev`, then sign in with each of the four documented accounts. The [user guide](./user-guide.md) is written as a walkthrough and can serve as the recording script; `tests/e2e/` drives exactly these journeys in a real browser. |
-| — | Sitemap added to the home page | ✅ | Rendered as an interactive visual tree in the *Sitemap* section of `/`, with a full-page version at `/sitemap` |
+| — | Sitemap added to the home page | ⚠️ | **No longer literally on `/`.** Moved to a dedicated `/sitemap` page (still the same interactive visual tree), reached via a direct nav-bar/footer link and a hero CTA — a product decision to keep the landing page shorter. If a literal on-page sitemap is required for submission, this line should be reverted. |
 | — | Hosting the application and sharing a URL (stated as preferable) | ❌ | Not deployed. The application is deployment-ready — see [installation.md §12.7](./installation.md#127-production-build) — but publishing to a public host is the submitter's decision, not something to do unprompted |
 
 ---

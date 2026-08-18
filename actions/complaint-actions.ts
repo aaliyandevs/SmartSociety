@@ -178,7 +178,7 @@ export async function assignComplaintAction(
       userId: staffUserId,
       type: 'COMPLAINT_ASSIGNED',
       title: 'New ticket assigned to you',
-      body: `${complaint.ticketNumber} — ${complaint.title} (flat ${flatLabel}). Due ${complaint.slaDueAt.toLocaleString('en-IN')}.`,
+      body: `${complaint.ticketNumber} — ${complaint.title} (flat ${flatLabel}). Due ${complaint.slaDueAt.toLocaleString('en-PK')}.`,
       link: `/staff/tickets/${complaint.id}`,
       entityType: 'Complaint',
       entityId: complaint.id,

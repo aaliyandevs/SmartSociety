@@ -75,7 +75,7 @@ export async function generateBillsAction(
       generatedById: user.id,
     });
 
-    const period = new Date(input.periodYear, input.periodMonth - 1, 1).toLocaleDateString('en-IN', {
+    const period = new Date(input.periodYear, input.periodMonth - 1, 1).toLocaleDateString('en-PK', {
       month: 'long',
       year: 'numeric',
     });
@@ -105,7 +105,7 @@ export async function generateBillsAction(
           notifyFlat(bill.flatId, {
             type: 'BILL_GENERATED',
             title: `Maintenance bill for ${period}`,
-            body: `Invoice ${bill.billNumber} for ${formatCurrency(Number(bill.totalAmount))} is due on ${bill.dueDate.toLocaleDateString('en-IN')}.`,
+            body: `Invoice ${bill.billNumber} for ${formatCurrency(Number(bill.totalAmount))} is due on ${bill.dueDate.toLocaleDateString('en-PK')}.`,
             link: '/resident/bills',
             entityType: 'MaintenanceBill',
             entityId: bill.id,

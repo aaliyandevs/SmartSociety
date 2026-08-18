@@ -1,7 +1,7 @@
 import type { ElementType } from 'react';
 import type { Role } from '@prisma/client';
 import {
-  BadgeIndianRupee,
+  Banknote,
   Bell,
   Building2,
   CalendarCheck,
@@ -78,7 +78,7 @@ export const ADMIN_NAV: NavSection[] = [
   {
     title: 'Operations',
     items: [
-      { label: 'Maintenance Bills', href: '/admin/bills', icon: BadgeIndianRupee },
+      { label: 'Maintenance Bills', href: '/admin/bills', icon: Banknote },
       { label: 'Payments', href: '/admin/payments', icon: CreditCard },
       { label: 'Complaints', href: '/admin/complaints', icon: LifeBuoy },
       { label: 'Amenities', href: '/admin/amenities', icon: CalendarRange },
@@ -112,7 +112,7 @@ export const RESIDENT_NAV: NavSection[] = [
   {
     title: 'Money',
     items: [
-      { label: 'Maintenance Bills', href: '/resident/bills', icon: BadgeIndianRupee },
+      { label: 'Maintenance Bills', href: '/resident/bills', icon: Banknote },
       { label: 'Payment History', href: '/resident/payments', icon: CreditCard },
     ],
   },

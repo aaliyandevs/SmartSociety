@@ -219,7 +219,7 @@ export function ResidentManager({
                     name="phone"
                     inputMode="numeric"
                     required
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={resident?.phone}
                   />
                 </Field>
@@ -233,7 +233,7 @@ export function ResidentManager({
                     id="alternatePhone"
                     name="alternatePhone"
                     inputMode="numeric"
-                    maxLength={10}
+                    maxLength={11}
                     defaultValue={resident?.alternatePhone ?? ''}
                   />
                 </Field>

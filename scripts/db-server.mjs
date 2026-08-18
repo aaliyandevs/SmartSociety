@@ -26,6 +26,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import pg from 'pg';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -113,6 +114,28 @@ async function waitForPort(port, timeoutMs = 20_000) {
   return false;
 }
 
+// `createdb` is not shipped by the `@embedded-postgres/*` binary packages (only
+// `initdb`, `pg_ctl` and `postgres` are), so the database is created over a
+// real connection instead of shelling out to a binary that does not exist.
+async function ensureDatabase() {
+  const client = new pg.Client({
+    host: '127.0.0.1',
+    port: CONFIG.port,
+    user: CONFIG.user,
+    password: CONFIG.password,
+    database: 'postgres',
+  });
+  await client.connect();
+  try {
+    await client.query(`CREATE DATABASE "${CONFIG.database}" ENCODING 'UTF8' TEMPLATE template0`);
+    console.log(`Created database "${CONFIG.database}".`);
+  } catch (error) {
+    if (error.code !== '42P04') throw error; // 42P04 = duplicate_database — fine
+  } finally {
+    await client.end();
+  }
+}
+
 // ── Commands ─────────────────────────────────────────────────────────────────
 
 function initialise() {
@@ -126,7 +149,7 @@ function initialise() {
     '--pwfile', PW_FILE,
     '--auth=scram-sha-256',
     // Without these, initdb inherits the host locale — on Windows that means a
-    // WIN1252 cluster, which cannot store "₹" or any non-Latin-1 character.
+    // WIN1252 cluster, which cannot store Urdu names or any non-Latin-1 character.
     '--encoding=UTF8',
     '--locale=C',
   ]);
@@ -169,16 +192,7 @@ async function start() {
     throw new Error(`PostgreSQL did not start listening on port ${CONFIG.port}. See ${LOG_FILE}`);
   }
 
-  // `createdb` exits non-zero when the database already exists — that is fine.
-  const created = run(exe('createdb'), [
-    '-h', '127.0.0.1',
-    '-p', String(CONFIG.port),
-    '-U', CONFIG.user,
-    '-E', 'UTF8',
-    '-T', 'template0',
-    CONFIG.database,
-  ]);
-  if (created.status === 0) console.log(`Created database "${CONFIG.database}".`);
+  await ensureDatabase();
 
   console.log(`
 PostgreSQL is running and will keep running in the background.

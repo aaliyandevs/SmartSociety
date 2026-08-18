@@ -24,8 +24,8 @@ describe('formatting helpers', () => {
     expect(toNumber('not-a-number')).toBe(0);
   });
 
-  it('groups numbers in the Indian numbering system', () => {
-    expect(formatNumber(1234567)).toBe('12,34,567');
+  it('groups numbers with standard thousands separators', () => {
+    expect(formatNumber(1234567)).toBe('1,234,567');
   });
 
   it('turns enum values into readable labels', () => {
@@ -35,9 +35,9 @@ describe('formatting helpers', () => {
   });
 
   it('derives at most two initials from a name', () => {
-    expect(initials('Ananya Sharma')).toBe('AS');
-    expect(initials('Rajesh Kumar Deshmukh')).toBe('RK');
-    expect(initials('Prakash')).toBe('P');
+    expect(initials('Ayesha Khan')).toBe('AK');
+    expect(initials('Muhammad Bilal Ahmed')).toBe('MB');
+    expect(initials('Usman')).toBe('U');
   });
 
   it('converts minutes-from-midnight into a 12-hour label', () => {

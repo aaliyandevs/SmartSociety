@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { CalendarCheck, CalendarRange, Clock, IndianRupee } from 'lucide-react';
+import { CalendarCheck, CalendarRange, Clock, Banknote } from 'lucide-react';
 
 import { PageHeader } from '@/components/shared/page-header';
 import { StatCard } from '@/components/shared/stat-card';
@@ -84,7 +84,7 @@ export default async function AdminAmenitiesPage() {
           label="Booking fees"
           value={formatCurrency(revenue._sum.fee ?? 0)}
           hint="Confirmed and completed bookings"
-          icon={IndianRupee}
+          icon={Banknote}
           tone="success"
         />
       </section>

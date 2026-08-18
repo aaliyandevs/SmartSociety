@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import {
-  BadgeIndianRupee,
+  Banknote,
   Building2,
   CalendarRange,
   Gauge,
@@ -138,7 +138,7 @@ export default async function AdminReportsPage() {
           label="Collection rate"
           value={`${collection.collectionRate}%`}
           hint={`${formatCurrency(collection.collected)} of ${formatCurrency(collection.billed)}`}
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           tone={collection.collectionRate >= 80 ? 'success' : 'warning'}
         />
         <StatCard

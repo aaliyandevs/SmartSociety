@@ -54,11 +54,11 @@ export async function seedBaseline(): Promise<Baseline> {
     data: {
       name: 'Test Society',
       addressLine1: '1 Test Road',
-      city: 'Pune',
-      state: 'Maharashtra',
+      city: 'Lahore',
+      state: 'Punjab',
       postalCode: '411045',
       contactEmail: 'office@test.local',
-      contactPhone: '9822000000',
+      contactPhone: '03004000000',
       penaltyPercent: 2,
       penaltyGraceDays: 5,
     },
@@ -99,7 +99,7 @@ export async function seedBaseline(): Promise<Baseline> {
       passwordHash: hash,
       role: 'ADMIN',
       fullName: 'Test Admin',
-      phone: '9822000001',
+      phone: '03004000001',
     },
   });
 
@@ -124,7 +124,7 @@ export async function seedBaseline(): Promise<Baseline> {
     'resident@test.local',
     'testresident',
     'Test Resident',
-    '9822000002',
+    '03004000002',
     flatA.id,
     'OWNER',
   );
@@ -133,7 +133,7 @@ export async function seedBaseline(): Promise<Baseline> {
     'resident2@test.local',
     'testresident2',
     'Second Resident',
-    '9822000003',
+    '03004000003',
     flatB.id,
     'TENANT',
   );
@@ -145,7 +145,7 @@ export async function seedBaseline(): Promise<Baseline> {
       passwordHash: hash,
       role: 'GUARD',
       fullName: 'Test Guard',
-      phone: '9822000004',
+      phone: '03004000004',
     },
   });
   const guardProfile = await prisma.staffProfile.create({
@@ -165,7 +165,7 @@ export async function seedBaseline(): Promise<Baseline> {
       passwordHash: hash,
       role: 'MAINTENANCE_STAFF',
       fullName: 'Test Technician',
-      phone: '9822000005',
+      phone: '03004000005',
     },
   });
   const techProfile = await prisma.staffProfile.create({

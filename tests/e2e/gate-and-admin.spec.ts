@@ -21,7 +21,7 @@ test.describe('gate verification', () => {
       // 1 — the resident pre-approves a visitor.
       await residentPage.goto('/resident/visitors/new');
       await residentPage.getByLabel('Visitor name').fill('Gate Flow Visitor');
-      await residentPage.getByLabel('Mobile number').fill('9876500022');
+      await residentPage.getByLabel('Mobile number').fill('03001234562');
       await residentPage.getByRole('button', { name: 'Create pass' }).click();
       await residentPage.waitForURL(/\/resident\/visitors\/[a-z0-9]+/, { timeout: 30_000 });
 
@@ -75,7 +75,7 @@ test.describe('gate verification', () => {
 
     await page.getByRole('button', { name: 'Delivery', exact: true }).click();
     await page.getByLabel('Visitor name').fill('E2E Courier');
-    await page.getByLabel('Mobile number').fill('9876500033');
+    await page.getByLabel('Mobile number').fill('03001234563');
 
     await page.getByRole('button', { name: 'Record entry' }).click();
     await expectToast(page, /logged in for flat/i);

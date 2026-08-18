@@ -91,7 +91,7 @@ export async function createGatePassAction(
       userId: user.id,
       type: 'GATE_PASS_CREATED',
       title: 'Visitor pass created',
-      body: `${input.visitorName} can enter using gate code ${pass.gateCode} until ${input.validUntil.toLocaleString('en-IN')}.`,
+      body: `${input.visitorName} can enter using gate code ${pass.gateCode} until ${input.validUntil.toLocaleString('en-PK')}.`,
       link: `/resident/visitors/${pass.id}`,
       entityType: 'GatePass',
       entityId: pass.id,

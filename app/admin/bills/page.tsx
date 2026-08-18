@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Prisma } from '@prisma/client';
-import { BadgeIndianRupee, Download, FileWarning, TrendingUp, Wallet } from 'lucide-react';
+import { Banknote, Download, FileWarning, TrendingUp, Wallet } from 'lucide-react';
 
 import { PageHeader } from '@/components/shared/page-header';
 import { StatCard } from '@/components/shared/stat-card';
@@ -108,7 +108,7 @@ export default async function AdminBillsPage({
           label="Total billed"
           value={formatCurrency(summary.billed)}
           hint={`${summary.billCount} invoices`}
-          icon={BadgeIndianRupee}
+          icon={Banknote}
         />
         <StatCard
           label="Collected"
@@ -172,7 +172,7 @@ export default async function AdminBillsPage({
 
       {bills.length === 0 ? (
         <EmptyState
-          icon={BadgeIndianRupee}
+          icon={Banknote}
           title="No invoices match these filters"
           description="Clear the filters, or generate the billing run for a new month."
         />

@@ -105,10 +105,17 @@ directly serves the SRS's scalability requirement for multi-tower complexes.
 
 ### A-9 · Currency and locale
 
-**Assumption:** Indian Rupees, `en-IN` formatting (lakh/crore grouping),
-10-digit Indian mobile numbers and Indian vehicle registration patterns. The SRS
-describes an Indian housing society; all formatting is centralised in
-`lib/utils.ts` and all validation in `lib/validations/`.
+**Assumption:** Pakistani Rupees, `en-PK` formatting (standard thousands
+grouping), 11-digit Pakistani mobile numbers (`03XXXXXXXXX`) and Pakistani
+vehicle registration patterns (e.g. `LEA1234`). All formatting is centralised
+in `lib/utils.ts` and all validation in `lib/validations/`.
+
+The SRS's own scenario is written around an Indian housing society; the
+locale, seed data, currency and validation formats were switched to a
+Pakistani society afterward at the user's request. If you need to revert to
+the original Indian locale, the equivalents are: `en-IN` formatting, INR
+currency, 10-digit mobile numbers matching `/^[6-9]\d{9}$/`, and vehicle plates
+matching `/^[A-Z]{2}\d{1,2}[A-Z]{0,3}\d{1,4}$/`.
 
 ### A-10 · Billing policy
 

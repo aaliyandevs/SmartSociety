@@ -5,17 +5,14 @@ import { useActionState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 import { Alert } from '@/components/ui/feedback';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, SubmitButton, fieldErrors } from '@/components/shared/form';
 import { loginAction } from '@/actions/auth-actions';
 import { idleState } from '@/lib/action-result';
-import { DEMO_ACCOUNTS } from '@/lib/demo-accounts';
 
 export function LoginForm({ next }: { next?: string }) {
   const [state, formAction] = useActionState(loginAction, idleState);
   const [showPassword, setShowPassword] = React.useState(false);
-  const [prefill, setPrefill] = React.useState<{ identifier: string; password: string } | null>(null);
 
   return (
     <div className="mt-7 space-y-6">
@@ -38,8 +35,6 @@ export function LoginForm({ next }: { next?: string }) {
             spellCheck={false}
             placeholder="admin@smartsociety.local"
             required
-            defaultValue={prefill?.identifier}
-            key={`identifier-${prefill?.identifier ?? ''}`}
             aria-invalid={fieldErrors(state, 'identifier') ? true : undefined}
           />
         </Field>
@@ -54,8 +49,6 @@ export function LoginForm({ next }: { next?: string }) {
               placeholder="••••••••"
               required
               className="pr-10"
-              defaultValue={prefill?.password}
-              key={`password-${prefill?.password ?? ''}`}
               aria-invalid={fieldErrors(state, 'password') ? true : undefined}
             />
             <button
@@ -73,33 +66,6 @@ export function LoginForm({ next }: { next?: string }) {
           Sign in
         </SubmitButton>
       </form>
-
-      {/* Demo credentials — required as a submission deliverable (SRS §1.9). */}
-      <div className="rounded-xl border border-dashed border-border bg-muted/30 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Demo accounts
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Select a role to fill the form, then press Sign in.
-        </p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {DEMO_ACCOUNTS.map((account) => (
-            <Button
-              key={account.email}
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-auto flex-col items-start gap-0.5 py-2 text-left"
-              onClick={() => setPrefill({ identifier: account.email, password: account.password })}
-            >
-              <span className="text-xs font-semibold">{account.label}</span>
-              <span className="max-w-full truncate text-[11px] font-normal text-muted-foreground">
-                {account.email}
-              </span>
-            </Button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
