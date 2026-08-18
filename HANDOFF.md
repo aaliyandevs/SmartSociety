@@ -105,10 +105,14 @@ missing named requirement.
 
 - No `gh` CLI was available in the prior session — plain `git` + a connected
   **Vercel MCP integration** were used instead for GitHub push and Vercel
-  deploy/domain/env operations. If Vercel MCP tools aren't available on this
-  machine, the user will need to drive Vercel's dashboard manually (Settings
-  → Environment Variables / Domains) — talk them through it like a normal
-  web UI walkthrough.
+  deploy/domain/env operations. The user logs into Claude with the same
+  account on both machines, and Vercel/other integrations are account-linked
+  (not machine-local), so these MCP tools should already be available here
+  too — try them directly (e.g. `list_teams`, `get_project`) rather than
+  assuming a manual-dashboard fallback is needed. Two things Vercel's MCP
+  toolset could **not** do even in the prior session: set environment
+  variables, and add a free custom `.vercel.app` domain — those genuinely
+  require the user to click through the Vercel dashboard themselves.
 - `ffmpeg` is **not** installed by default — it was manually downloaded
   (BtbN static Windows build) only when needed for video analysis/muxing.
   Not required for normal `npm run dev` / build work.
