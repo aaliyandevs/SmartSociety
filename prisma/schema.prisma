@@ -1,0 +1,1038 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// SmartSociety — Smart Society Management System
+// PostgreSQL schema (Prisma ORM)
+//
+// Entity relationships mandated by the SRS (§1.8.3):
+//   Flats     → Residents          : one-to-many
+//   Flats     → MaintenanceBills   : one-to-many
+//   Residents → Complaints         : one-to-many
+//   Flats     → Visitors → GateLogs: one-to-many
+//   Residents → AmenityBookings    : one-to-many
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ══════════════════════════════════════════════════════════════════════════════
+
+enum Role {
+  ADMIN
+  RESIDENT
+  GUARD
+  MAINTENANCE_STAFF
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum ResidentType {
+  OWNER
+  TENANT
+}
+
+enum OccupancyStatus {
+  OCCUPIED
+  VACANT
+  UNDER_MAINTENANCE
+}
+
+enum FlatType {
+  ONE_BHK
+  TWO_BHK
+  THREE_BHK
+  FOUR_BHK
+  PENTHOUSE
+  STUDIO
+}
+
+enum VehicleType {
+  CAR
+  BIKE
+  SCOOTER
+  BICYCLE
+  OTHER
+}
+
+enum StaffDepartment {
+  PLUMBING
+  ELECTRICAL
+  HOUSEKEEPING
+  ELEVATOR
+  GARDENING
+  SECURITY
+  GENERAL
+}
+
+enum VisitorType {
+  GUEST
+  DELIVERY
+  CAB
+  VENDOR
+  SERVICE
+  OTHER
+}
+
+enum GatePassStatus {
+  ACTIVE
+  USED
+  EXPIRED
+  CANCELLED
+  REJECTED
+}
+
+enum VerificationMethod {
+  QR_SCAN
+  GATE_CODE
+  MANUAL
+  PRE_APPROVED
+}
+
+enum GateLogStatus {
+  INSIDE
+  EXITED
+  DENIED
+  OVERSTAY
+}
+
+enum BillStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ChargeType {
+  MAINTENANCE
+  WATER
+  SECURITY
+  REPAIRS
+  COMMON_ELECTRICITY
+  SINKING_FUND
+  PARKING
+  PENALTY
+  OTHER
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  NETBANKING
+  WALLET
+  CASH
+  CHEQUE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum ComplaintCategory {
+  PLUMBING
+  ELECTRICAL
+  ELEVATOR
+  CLEANING
+  SECURITY
+  WATER
+  CARPENTRY
+  PEST_CONTROL
+  OTHER
+}
+
+enum ComplaintPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+/// SRS §1.6 (Residents #4) mandates: Pending, In-Progress, Resolved.
+/// CLOSED is added so administrators can formally close a resolved ticket.
+enum ComplaintStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  REJECTED
+}
+
+enum NoticeCategory {
+  GENERAL
+  MAINTENANCE
+  EVENT
+  FINANCIAL
+  SECURITY
+  GUIDELINE
+  EMERGENCY
+}
+
+enum NoticePriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum NoticeAudience {
+  ALL
+  RESIDENTS
+  OWNERS
+  TENANTS
+  STAFF
+}
+
+enum PollStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum AlertType {
+  FIRE
+  SECURITY
+  MEDICAL
+  WATER_SHUTDOWN
+  POWER_OUTAGE
+  GAS_LEAK
+  NATURAL_DISASTER
+  GENERAL
+}
+
+enum AlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum AlertStatus {
+  ACTIVE
+  RESOLVED
+}
+
+enum NotificationType {
+  GATE_PASS_CREATED
+  VISITOR_ARRIVED
+  VISITOR_DENIED
+  PASS_EXPIRED
+  OVERSTAY
+  COMPLAINT_CREATED
+  COMPLAINT_ASSIGNED
+  COMPLAINT_UPDATED
+  COMPLAINT_RESOLVED
+  SLA_WARNING
+  BILL_GENERATED
+  BILL_OVERDUE
+  PAYMENT_SUCCESS
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  NOTICE_PUBLISHED
+  POLL_OPENED
+  EMERGENCY_ALERT
+  SYSTEM
+}
+
+enum EmergencyContactScope {
+  SOCIETY_DIRECTORY
+  RESIDENT_PERSONAL
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SOCIETY STRUCTURE
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// Single-tenant today, but modelled as a row so the schema scales to
+/// multi-society deployments (NFR: Scalability).
+model Society {
+  id             String   @id @default(cuid())
+  name           String
+  registrationNo String?  @unique
+  addressLine1   String
+  addressLine2   String?
+  city           String
+  state          String
+  postalCode     String
+  country        String   @default("India")
+  contactEmail   String
+  contactPhone   String
+  logoUrl        String?
+  /// Free-form society rules shown on the "Society Guidelines" page.
+  guidelines     String?
+  /// Late-payment penalty applied per overdue bill, in percent.
+  penaltyPercent Decimal  @default(2.00) @db.Decimal(5, 2)
+  /// Grace period (days) after the due date before a penalty applies.
+  penaltyGraceDays Int    @default(5)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  blocks    Block[]
+  amenities Amenity[]
+
+  @@map("societies")
+}
+
+model Block {
+  id        String    @id @default(cuid())
+  societyId String
+  name      String
+  /// Human label, e.g. "Tower A — East Wing".
+  label     String?
+  totalFloors Int     @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  flats   Flat[]
+
+  @@unique([societyId, name])
+  @@index([societyId])
+  @@map("blocks")
+}
+
+/// SRS §1.8.3 — Flats/Units (flat_id PK, block_name, flat_number, occupancy_type).
+model Flat {
+  id              String          @id @default(cuid())
+  blockId         String
+  flatNumber      String
+  floor           Int             @default(0)
+  flatType        FlatType        @default(TWO_BHK)
+  carpetAreaSqft  Int?
+  occupancyStatus OccupancyStatus @default(VACANT)
+  /// OWNER when the registered owner lives here, TENANT when let out.
+  occupancyType   ResidentType?
+  parkingSlots    Int             @default(1)
+  /// Monthly base maintenance charge for this unit.
+  baseMaintenance Decimal         @default(0) @db.Decimal(10, 2)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime?
+
+  block     Block              @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  residents ResidentProfile[]
+  bills     MaintenanceBill[]
+  visitors  Visitor[]
+  gatePasses GatePass[]
+  gateLogs  GateLog[]
+  complaints Complaint[]
+  bookings  AmenityBooking[]
+  vehicles  Vehicle[]
+
+  @@unique([blockId, flatNumber])
+  @@index([occupancyStatus])
+  @@index([blockId])
+  @@map("flats")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// IDENTITY & ACCESS
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// SRS §1.8.3 — Users (user_id PK, username, password_hash, role).
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  username     String     @unique
+  /// bcrypt hash — plaintext passwords are never stored or returned to clients.
+  passwordHash String
+  role         Role
+  fullName     String
+  phone        String
+  avatarUrl    String?
+  status       UserStatus @default(ACTIVE)
+  lastLoginAt  DateTime?
+  failedLoginCount Int    @default(0)
+  lockedUntil  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+
+  residentProfile ResidentProfile?
+  staffProfile    StaffProfile?
+  sessions        Session[]
+  notifications   Notification[]
+
+  auditLogs             AuditLog[]
+  noticesCreated        Notice[]           @relation("NoticeAuthor")
+  pollsCreated          Poll[]             @relation("PollAuthor")
+  alertsRaised          EmergencyAlert[]   @relation("AlertRaisedBy")
+  alertsResolved        EmergencyAlert[]   @relation("AlertResolvedBy")
+  billsGenerated        MaintenanceBill[]  @relation("BillGeneratedBy")
+  gateVerifications     GateLog[]          @relation("GateLogGuard")
+  complaintUpdates      ComplaintUpdate[]
+  bookingsReviewed      AmenityBooking[]   @relation("BookingReviewedBy")
+  noticeReads           NoticeRead[]
+
+  @@index([role, status])
+  @@map("users")
+}
+
+/// Server-side session records so a logout (or an admin action) can revoke a
+/// cookie immediately instead of waiting for the JWT to expire.
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+/// A resident/home-owner. Flats → Residents is one-to-many (SRS §1.8.3).
+model ResidentProfile {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  flatId       String
+  residentType ResidentType @default(OWNER)
+  /// The primary contact for the flat — receives billing notifications.
+  isPrimary    Boolean      @default(false)
+  moveInDate   DateTime     @default(now())
+  moveOutDate  DateTime?
+  occupation   String?
+  alternatePhone String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deletedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flat Flat @relation(fields: [flatId], references: [id], onDelete: Restrict)
+
+  familyMembers     FamilyMember[]
+  vehicles          Vehicle[]
+  emergencyContacts EmergencyContact[]
+  complaints        Complaint[]
+  bookings          AmenityBooking[]
+  gatePasses        GatePass[]
+  payments          Payment[]
+  votes             PollVote[]
+
+  @@index([flatId])
+  @@index([residentType])
+  @@map("resident_profiles")
+}
+
+model FamilyMember {
+  id           String    @id @default(cuid())
+  residentId   String
+  fullName     String
+  relation     String
+  age          Int?
+  phone        String?
+  isDependent  Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  resident ResidentProfile @relation(fields: [residentId], references: [id], onDelete: Cascade)
+
+  @@index([residentId])
+  @@map("family_members")
+}
+
+model Vehicle {
+  id             String      @id @default(cuid())
+  residentId     String
+  flatId         String
+  registrationNo String
+  vehicleType    VehicleType @default(CAR)
+  make           String?
+  model          String?
+  color          String?
+  parkingSlot    String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  deletedAt      DateTime?
+
+  resident ResidentProfile @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  flat     Flat            @relation(fields: [flatId], references: [id], onDelete: Cascade)
+
+  @@unique([registrationNo])
+  @@index([residentId])
+  @@index([flatId])
+  @@map("vehicles")
+}
+
+/// Doubles as the society-wide emergency directory (residentId = null) and a
+/// resident's own emergency contacts (residentId set).
+model EmergencyContact {
+  id         String                @id @default(cuid())
+  residentId String?
+  scope      EmergencyContactScope @default(RESIDENT_PERSONAL)
+  name       String
+  relation   String?
+  /// e.g. "Fire Brigade", "Society Manager", "Ambulance".
+  designation String?
+  phone      String
+  altPhone   String?
+  email      String?
+  sortOrder  Int                   @default(0)
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  deletedAt  DateTime?
+
+  resident ResidentProfile? @relation(fields: [residentId], references: [id], onDelete: Cascade)
+
+  @@index([residentId])
+  @@index([scope])
+  @@map("emergency_contacts")
+}
+
+/// Guards and maintenance technicians.
+model StaffProfile {
+  id           String          @id @default(cuid())
+  userId       String          @unique
+  employeeCode String          @unique
+  department   StaffDepartment @default(GENERAL)
+  designation  String
+  shift        String?
+  /// Gate a guard is posted at, e.g. "Main Gate".
+  gateAssignment String?
+  skills       String[]        @default([])
+  joinedAt     DateTime        @default(now())
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  assignedComplaints Complaint[] @relation("ComplaintAssignee")
+
+  @@index([department])
+  @@map("staff_profiles")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// VISITOR MANAGEMENT & GATE SECURITY
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// SRS §1.8.3 — Visitors (visitor_id PK, flat_id FK, visitor_name, phone,
+/// vehicle_number, gate_pass_code). Flats → Visitors is one-to-many.
+model Visitor {
+  id            String      @id @default(cuid())
+  flatId        String
+  name          String
+  phone         String
+  visitorType   VisitorType @default(GUEST)
+  vehicleNumber String?
+  /// Courier/vendor company, e.g. "BlueDart", "Zomato".
+  company       String?
+  idProofType   String?
+  idProofNumber String?
+  photoUrl      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  flat       Flat       @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  gatePasses GatePass[]
+  gateLogs   GateLog[]
+
+  @@index([flatId])
+  @@index([phone])
+  @@index([visitorType])
+  @@map("visitors")
+}
+
+/// Digital QR / numeric gate pass pre-approved by a resident (SRS §1.6).
+model GatePass {
+  id          String         @id @default(cuid())
+  /// Human-readable pass reference, e.g. "GP-2K4M7X".
+  passCode    String         @unique
+  /// 6-digit numeric key a guard can type when the camera is unusable.
+  gateCode    String         @unique
+  /// Opaque high-entropy token embedded in the QR image.
+  qrToken     String         @unique
+  visitorId   String
+  flatId      String
+  residentId  String
+  visitorType VisitorType    @default(GUEST)
+  purpose     String?
+  validFrom   DateTime
+  validUntil  DateTime
+  status      GatePassStatus @default(ACTIVE)
+  maxEntries  Int            @default(1)
+  entriesUsed Int            @default(0)
+  cancelledAt DateTime?
+  cancelReason String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  visitor  Visitor         @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  flat     Flat            @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  resident ResidentProfile @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  gateLogs GateLog[]
+
+  @@index([status, validUntil])
+  @@index([flatId])
+  @@index([residentId])
+  @@map("gate_passes")
+}
+
+/// Immutable-by-convention record of every gate movement (NFR: Audit Logging).
+/// Visitors → GateLogs is one-to-many (SRS §1.8.3).
+model GateLog {
+  id                 String             @id @default(cuid())
+  visitorId          String
+  flatId             String
+  gatePassId         String?
+  guardId            String?
+  gate               String             @default("Main Gate")
+  verificationMethod VerificationMethod @default(MANUAL)
+  status             GateLogStatus      @default(INSIDE)
+  entryAt            DateTime?
+  exitAt             DateTime?
+  /// Expected departure — used to raise overstay alerts (SRS §1.6, Security #3).
+  expectedExitAt     DateTime?
+  overstayNotifiedAt DateTime?
+  denialReason       String?
+  remarks            String?
+  vehicleNumber      String?
+  createdAt          DateTime           @default(now())
+
+  visitor  Visitor   @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  flat     Flat      @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  gatePass GatePass? @relation(fields: [gatePassId], references: [id], onDelete: SetNull)
+  guard    User?     @relation("GateLogGuard", fields: [guardId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([entryAt])
+  @@index([flatId])
+  @@index([gatePassId])
+  @@map("gate_logs")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MAINTENANCE BILLING
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// SRS §1.8.3 — MaintenanceBills (bill_id PK, flat_id FK, amount_due, due_date,
+/// payment_status). Flats → MaintenanceBills is one-to-many.
+model MaintenanceBill {
+  id            String     @id @default(cuid())
+  billNumber    String     @unique
+  flatId        String
+  /// Billing period, e.g. 2026-03.
+  periodMonth   Int
+  periodYear    Int
+  issueDate     DateTime   @default(now())
+  dueDate       DateTime
+  /// Sum of all non-penalty charges.
+  baseAmount    Decimal    @db.Decimal(10, 2)
+  penaltyAmount Decimal    @default(0) @db.Decimal(10, 2)
+  totalAmount   Decimal    @db.Decimal(10, 2)
+  paidAmount    Decimal    @default(0) @db.Decimal(10, 2)
+  status        BillStatus @default(UNPAID)
+  notes         String?
+  generatedById String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  flat        Flat      @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  generatedBy User?     @relation("BillGeneratedBy", fields: [generatedById], references: [id], onDelete: SetNull)
+  charges     BillCharge[]
+  payments    Payment[]
+
+  @@unique([flatId, periodYear, periodMonth])
+  @@index([status, dueDate])
+  @@index([flatId])
+  @@map("maintenance_bills")
+}
+
+/// Line-item breakdown (water, security, repairs, ...) required by SRS §1.6.
+model BillCharge {
+  id         String     @id @default(cuid())
+  billId     String
+  chargeType ChargeType
+  label      String
+  amount     Decimal    @db.Decimal(10, 2)
+  createdAt  DateTime   @default(now())
+
+  bill MaintenanceBill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@index([billId])
+  @@map("bill_charges")
+}
+
+/// Payments are SIMULATED — the SRS explicitly scopes out real gateway and bank
+/// reconciliation integration (§1.4).
+model Payment {
+  id              String        @id @default(cuid())
+  billId          String
+  residentId      String?
+  receiptNumber   String        @unique
+  transactionRef  String        @unique
+  amount          Decimal       @db.Decimal(10, 2)
+  method          PaymentMethod @default(UPI)
+  status          PaymentStatus @default(SUCCESS)
+  paidAt          DateTime      @default(now())
+  /// Always true in this build — kept so a real gateway can be swapped in later.
+  simulated       Boolean       @default(true)
+  gatewayResponse Json?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  bill     MaintenanceBill  @relation(fields: [billId], references: [id], onDelete: Cascade)
+  resident ResidentProfile? @relation(fields: [residentId], references: [id], onDelete: SetNull)
+
+  @@index([billId])
+  @@index([status, paidAt])
+  @@map("payments")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPLAINTS / HELPDESK
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// SRS §1.8.3 — Complaints (complaint_id PK, resident_id FK, category,
+/// description, status, created_at). Residents → Complaints is one-to-many.
+model Complaint {
+  id              String            @id @default(cuid())
+  ticketNumber    String            @unique
+  residentId      String
+  flatId          String
+  category        ComplaintCategory
+  priority        ComplaintPriority @default(MEDIUM)
+  status          ComplaintStatus   @default(PENDING)
+  title           String
+  description     String
+  location        String?
+  assignedStaffId String?
+  assignedAt      DateTime?
+  /// SLA target derived from priority at creation time.
+  slaDueAt        DateTime
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+  resolutionNotes String?
+  /// 1–5 star rating a resident can leave after resolution.
+  satisfaction    Int?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  deletedAt       DateTime?
+
+  resident      ResidentProfile @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  flat          Flat            @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  assignedStaff StaffProfile?   @relation("ComplaintAssignee", fields: [assignedStaffId], references: [id], onDelete: SetNull)
+
+  attachments ComplaintAttachment[]
+  updates     ComplaintUpdate[]
+
+  @@index([status, priority])
+  @@index([residentId])
+  @@index([assignedStaffId])
+  @@index([slaDueAt])
+  @@map("complaints")
+}
+
+model ComplaintAttachment {
+  id          String   @id @default(cuid())
+  complaintId String
+  fileName    String
+  /// Served through the authenticated /api/files route, never from /public.
+  storageKey  String
+  mimeType    String
+  sizeBytes   Int
+  createdAt   DateTime @default(now())
+
+  complaint Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@index([complaintId])
+  @@map("complaint_attachments")
+}
+
+/// Status history + work notes; drives the resident-facing ticket timeline.
+model ComplaintUpdate {
+  id          String           @id @default(cuid())
+  complaintId String
+  authorId    String?
+  fromStatus  ComplaintStatus?
+  toStatus    ComplaintStatus?
+  note        String
+  /// Notes marked internal are hidden from residents.
+  isInternal  Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  complaint Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  author    User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([complaintId])
+  @@map("complaint_updates")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AMENITIES
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Amenity {
+  id             String    @id @default(cuid())
+  societyId      String
+  name           String
+  slug           String    @unique
+  description    String?
+  location       String?
+  capacity       Int       @default(10)
+  /// Opening/closing times as minutes from midnight (e.g. 360 = 06:00).
+  openMinute     Int       @default(360)
+  closeMinute    Int       @default(1320)
+  /// Length of one bookable slot, in minutes.
+  slotMinutes    Int       @default(60)
+  bookingFee     Decimal   @default(0) @db.Decimal(10, 2)
+  maxAdvanceDays Int       @default(30)
+  /// A booking can only be cancelled this many hours before it starts.
+  minCancelHours Int       @default(4)
+  maxSlotsPerBooking Int   @default(2)
+  requiresApproval Boolean @default(false)
+  imageUrl       String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  society  Society          @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  bookings AmenityBooking[]
+
+  @@index([societyId])
+  @@map("amenities")
+}
+
+/// Residents → AmenityBookings is one-to-many (SRS §1.8.3).
+/// The composite unique key makes double-booking a slot impossible at the DB
+/// level; overlapping multi-slot ranges are additionally rejected in a
+/// serializable transaction (see services/amenity-service.ts).
+model AmenityBooking {
+  id           String        @id @default(cuid())
+  bookingCode  String        @unique
+  amenityId    String
+  residentId   String
+  flatId       String
+  startsAt     DateTime
+  endsAt       DateTime
+  guestsCount  Int           @default(1)
+  purpose      String?
+  fee          Decimal       @default(0) @db.Decimal(10, 2)
+  status       BookingStatus @default(CONFIRMED)
+  reviewedById String?
+  cancelledAt  DateTime?
+  cancelReason String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  amenity    Amenity         @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+  resident   ResidentProfile @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  flat       Flat            @relation(fields: [flatId], references: [id], onDelete: Cascade)
+  reviewedBy User?           @relation("BookingReviewedBy", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@unique([amenityId, startsAt, status], name: "amenity_slot_unique")
+  @@index([amenityId, startsAt])
+  @@index([residentId])
+  @@index([status])
+  @@map("amenity_bookings")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMMUNICATION — NOTICES, POLLS, EMERGENCY ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Notice {
+  id            String         @id @default(cuid())
+  title         String
+  content       String
+  category      NoticeCategory @default(GENERAL)
+  priority      NoticePriority @default(NORMAL)
+  audience      NoticeAudience @default(ALL)
+  publishAt     DateTime       @default(now())
+  expiresAt     DateTime?
+  isPinned      Boolean        @default(false)
+  isPublished   Boolean        @default(true)
+  attachmentUrl String?
+  /// Optional calendar date when the notice announces an event.
+  eventDate     DateTime?
+  eventLocation String?
+  authorId      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  author User?        @relation("NoticeAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  reads  NoticeRead[]
+
+  @@index([isPublished, publishAt])
+  @@index([category])
+  @@map("notices")
+}
+
+model NoticeRead {
+  id       String   @id @default(cuid())
+  noticeId String
+  userId   String
+  readAt   DateTime @default(now())
+
+  notice Notice @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([noticeId, userId])
+  @@index([userId])
+  @@map("notice_reads")
+}
+
+model Poll {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      PollStatus @default(DRAFT)
+  startsAt    DateTime
+  endsAt      DateTime
+  /// Hide who voted for what; tallies stay visible.
+  isAnonymous Boolean    @default(true)
+  /// Show live results before the poll closes.
+  showLiveResults Boolean @default(false)
+  authorId    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+
+  author  User?        @relation("PollAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  options PollOption[]
+  votes   PollVote[]
+
+  @@index([status, endsAt])
+  @@map("polls")
+}
+
+model PollOption {
+  id        String   @id @default(cuid())
+  pollId    String
+  label     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  poll  Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes PollVote[]
+
+  @@index([pollId])
+  @@map("poll_options")
+}
+
+/// One vote per resident per poll — enforced by a database unique constraint,
+/// not just by application logic.
+model PollVote {
+  id         String   @id @default(cuid())
+  pollId     String
+  optionId   String
+  residentId String
+  createdAt  DateTime @default(now())
+
+  poll     Poll            @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option   PollOption      @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  resident ResidentProfile @relation(fields: [residentId], references: [id], onDelete: Cascade)
+
+  @@unique([pollId, residentId])
+  @@index([optionId])
+  @@map("poll_votes")
+}
+
+model EmergencyAlert {
+  id           String        @id @default(cuid())
+  type         AlertType
+  severity     AlertSeverity @default(WARNING)
+  title        String
+  message      String
+  instructions String?
+  /// Optional targeting; null broadcasts society-wide.
+  targetBlockId String?
+  status       AlertStatus   @default(ACTIVE)
+  /// Drives the audible siren + full-screen banner in the client.
+  sirenEnabled Boolean       @default(true)
+  raisedById   String?
+  resolvedById String?
+  startedAt    DateTime      @default(now())
+  resolvedAt   DateTime?
+  resolutionNote String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  raisedBy   User? @relation("AlertRaisedBy", fields: [raisedById], references: [id], onDelete: SetNull)
+  resolvedBy User? @relation("AlertResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@index([status, startedAt])
+  @@map("emergency_alerts")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// NOTIFICATIONS & AUDIT
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Notification {
+  id         String           @id @default(cuid())
+  userId     String
+  type       NotificationType
+  title      String
+  body       String
+  /// In-app deep link, e.g. "/resident/complaints/abc123".
+  link       String?
+  entityType String?
+  entityId   String?
+  isUrgent   Boolean          @default(false)
+  readAt     DateTime?
+  createdAt  DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+/// Append-only. NFR "Audit Logging" requires immutable records for gate entries,
+/// complaint status changes and administrative financial edits — nothing in the
+/// application ever updates or deletes rows in this table.
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  /// Snapshot of the actor so the log stays readable if the user is removed.
+  actorName  String?
+  actorRole  Role?
+  action     String
+  entityType String
+  entityId   String?
+  description String
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

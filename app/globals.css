@@ -1,0 +1,311 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ───────────────────────────────────────────────────────────────────────────
+   SmartSociety design tokens
+
+   One palette drives all four role experiences. The accent hue shifts per role
+   (see [data-role] below) so a guard on a gate tablet can tell at a glance that
+   they are in the right console, without a second component library.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --radius: 0.75rem;
+
+  --background: oklch(0.985 0.004 240);
+  --foreground: oklch(0.21 0.02 250);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.02 250);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.02 250);
+
+  /* Deep teal — calm, institutional, distinct from the usual SaaS indigo. */
+  --primary: oklch(0.52 0.11 195);
+  --primary-foreground: oklch(0.99 0.005 195);
+  --primary-soft: oklch(0.95 0.03 195);
+
+  --secondary: oklch(0.96 0.008 245);
+  --secondary-foreground: oklch(0.3 0.03 250);
+
+  --muted: oklch(0.965 0.006 245);
+  --muted-foreground: oklch(0.52 0.02 250);
+
+  --accent: oklch(0.95 0.02 195);
+  --accent-foreground: oklch(0.32 0.06 195);
+
+  --destructive: oklch(0.58 0.21 27);
+  --destructive-foreground: oklch(0.99 0.01 27);
+
+  --success: oklch(0.61 0.14 155);
+  --success-foreground: oklch(0.99 0.01 155);
+
+  --warning: oklch(0.75 0.15 75);
+  --warning-foreground: oklch(0.25 0.06 75);
+
+  --info: oklch(0.6 0.13 245);
+  --info-foreground: oklch(0.99 0.01 245);
+
+  --border: oklch(0.91 0.008 245);
+  --input: oklch(0.91 0.008 245);
+  --ring: oklch(0.52 0.11 195);
+
+  --sidebar: oklch(0.99 0.004 240);
+  --sidebar-foreground: oklch(0.28 0.02 250);
+  --sidebar-border: oklch(0.92 0.008 245);
+  --sidebar-accent: oklch(0.955 0.012 195);
+  --sidebar-accent-foreground: oklch(0.35 0.07 195);
+
+  --chart-1: oklch(0.55 0.12 195);
+  --chart-2: oklch(0.62 0.14 155);
+  --chart-3: oklch(0.72 0.15 75);
+  --chart-4: oklch(0.6 0.16 300);
+  --chart-5: oklch(0.62 0.18 25);
+}
+
+.dark {
+  --background: oklch(0.17 0.015 255);
+  --foreground: oklch(0.95 0.008 245);
+
+  --card: oklch(0.213 0.017 255);
+  --card-foreground: oklch(0.95 0.008 245);
+
+  --popover: oklch(0.213 0.017 255);
+  --popover-foreground: oklch(0.95 0.008 245);
+
+  --primary: oklch(0.72 0.12 195);
+  --primary-foreground: oklch(0.16 0.03 195);
+  --primary-soft: oklch(0.29 0.05 195);
+
+  --secondary: oklch(0.27 0.02 255);
+  --secondary-foreground: oklch(0.93 0.01 245);
+
+  --muted: oklch(0.26 0.018 255);
+  --muted-foreground: oklch(0.7 0.018 250);
+
+  --accent: oklch(0.3 0.045 195);
+  --accent-foreground: oklch(0.88 0.06 195);
+
+  --destructive: oklch(0.66 0.19 27);
+  --destructive-foreground: oklch(0.16 0.03 27);
+
+  --success: oklch(0.7 0.14 155);
+  --success-foreground: oklch(0.16 0.03 155);
+
+  --warning: oklch(0.8 0.14 75);
+  --warning-foreground: oklch(0.2 0.05 75);
+
+  --info: oklch(0.7 0.13 245);
+  --info-foreground: oklch(0.16 0.03 245);
+
+  --border: oklch(0.3 0.02 255);
+  --input: oklch(0.32 0.02 255);
+  --ring: oklch(0.65 0.11 195);
+
+  --sidebar: oklch(0.196 0.016 255);
+  --sidebar-foreground: oklch(0.9 0.01 245);
+  --sidebar-border: oklch(0.29 0.02 255);
+  --sidebar-accent: oklch(0.28 0.045 195);
+  --sidebar-accent-foreground: oklch(0.88 0.06 195);
+
+  --chart-1: oklch(0.7 0.12 195);
+  --chart-2: oklch(0.72 0.14 155);
+  --chart-3: oklch(0.8 0.14 75);
+  --chart-4: oklch(0.7 0.15 300);
+  --chart-5: oklch(0.7 0.17 25);
+}
+
+/* Per-role accent tinting — applied on <body data-role="GUARD"> etc. */
+[data-role='GUARD'] {
+  --primary: oklch(0.55 0.15 255);
+  --ring: oklch(0.55 0.15 255);
+  --primary-soft: oklch(0.95 0.03 255);
+  --sidebar-accent: oklch(0.955 0.02 255);
+  --sidebar-accent-foreground: oklch(0.36 0.1 255);
+}
+.dark [data-role='GUARD'],
+[data-role='GUARD'].dark {
+  --primary: oklch(0.72 0.13 255);
+  --primary-soft: oklch(0.3 0.06 255);
+}
+
+[data-role='MAINTENANCE_STAFF'] {
+  --primary: oklch(0.55 0.14 145);
+  --ring: oklch(0.55 0.14 145);
+  --primary-soft: oklch(0.95 0.04 145);
+  --sidebar-accent: oklch(0.955 0.025 145);
+  --sidebar-accent-foreground: oklch(0.36 0.09 145);
+}
+.dark [data-role='MAINTENANCE_STAFF'] {
+  --primary: oklch(0.72 0.13 145);
+  --primary-soft: oklch(0.3 0.06 145);
+}
+
+[data-role='RESIDENT'] {
+  --primary: oklch(0.55 0.13 285);
+  --ring: oklch(0.55 0.13 285);
+  --primary-soft: oklch(0.955 0.03 285);
+  --sidebar-accent: oklch(0.96 0.02 285);
+  --sidebar-accent-foreground: oklch(0.38 0.1 285);
+}
+.dark [data-role='RESIDENT'] {
+  --primary: oklch(0.73 0.12 285);
+  --primary-soft: oklch(0.3 0.06 285);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', 'Cascadia Code', monospace;
+
+  --animate-fade-in: fade-in 0.28s ease-out both;
+  --animate-slide-up: slide-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pulse-alert: pulse-alert 1.6s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes pulse-alert {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--destructive) 55%, transparent); }
+  50% { box-shadow: 0 0 0 14px color-mix(in oklch, var(--destructive) 0%, transparent); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* NFR: no horizontal overflow at any breakpoint down to 320px. */
+    overflow-x: hidden;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Respect the user's motion preference (accessibility). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Numeric columns line up in tables and stat tiles. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .surface-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--border) 55%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--border) 55%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .glass-panel {
+    background-color: color-mix(in oklch, var(--card) 78%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Horizontal scroll container for wide tables on small screens. */
+  .scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+}
+
+/* Thin, unobtrusive scrollbars in the dashboards. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklch, var(--muted-foreground) 30%, transparent);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklch, var(--muted-foreground) 50%, transparent);
+}

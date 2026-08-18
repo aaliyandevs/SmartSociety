@@ -1,0 +1,5 @@
+# Runtime storage for resident-uploaded complaint photos.
+#
+# Files written here are served only through the authenticated /api/files route
+# (see services/upload-service.ts), never as public static assets. The directory
+# is tracked so a fresh clone has somewhere to write; its contents are ignored.
