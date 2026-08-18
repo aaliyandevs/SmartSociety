@@ -1,4 +1,4 @@
-# SmartSociety
+~# SmartSociety
 
 **Smart Society Management System** — a web-based platform that centralises
 housing-society administration, gate security, maintenance billing, complaint
@@ -7,6 +7,13 @@ administrators, residents, security guards and maintenance staff.
 
 Built against the *Full-Stack Application Development* Software Requirements
 Specification.
+
+## 🌐 Live Demo
+
+**https://smartsocietyhub.vercel.app**
+
+Hosted live with a seeded demo database — sign in with any of the demo
+accounts below (or the one-click buttons on the sign-in page).
 
 ```bash
 npm install
