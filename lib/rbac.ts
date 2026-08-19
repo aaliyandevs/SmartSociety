@@ -65,11 +65,11 @@ export function canAccessPath(role: Role, pathname: string): boolean {
 }
 
 /**
- * Where to send a user immediately after signing in.
+ * Where to send a user immediately after logging in.
  *
  * A requested same-origin `next` path (typically set by middleware when it
  * bounced an unauthenticated visitor to `/login`) is honoured only if it
- * falls within the signing-in role's *own* section of the app (its
+ * falls within the logging-in role's *own* section of the app (its
  * `ROLE_HOME` prefix). A plain `canAccessPath` check is not enough here: some
  * routes are legitimately shared across roles for browsing once signed in
  * (`/guard` is reachable by both GUARD and ADMIN), but that does not mean an

@@ -38,7 +38,7 @@ export const PUBLIC_SECTION: SitemapSection = {
   audience: 'Anyone',
   role: null,
   entryPoint: '/',
-  summary: 'What visitors see before signing in.',
+  summary: 'What visitors see before logging in.',
   groups: [
     {
       title: 'Pages',
@@ -46,7 +46,7 @@ export const PUBLIC_SECTION: SitemapSection = {
       links: [
         { label: 'Home', href: '/', description: 'Product overview, features and this sitemap.' },
         { label: 'Sitemap', href: '/sitemap', description: 'Full map of every screen in the system.' },
-        { label: 'Sign in', href: '/login', description: 'Role-based sign-in with demo accounts.' },
+        { label: 'Login', href: '/login', description: 'Role-based login for all four account types.' },
       ],
     },
   ],

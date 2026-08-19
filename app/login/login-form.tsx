@@ -62,8 +62,8 @@ export function LoginForm({ next }: { next?: string }) {
           </div>
         </Field>
 
-        <SubmitButton className="w-full" size="lg" loadingText="Signing in…">
-          Sign in
+        <SubmitButton className="w-full" size="lg" loadingText="Logging in…">
+          Login
         </SubmitButton>
       </form>
     </div>

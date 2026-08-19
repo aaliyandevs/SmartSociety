@@ -46,7 +46,7 @@ export default async function GuardDashboardPage() {
       <PageHeader
         eyebrow={user.gateAssignment ?? 'Security'}
         title="Gate console"
-        description={`${new Date().toLocaleDateString('en-PK', { weekday: 'long', day: 'numeric', month: 'long' })} · signed in as ${user.fullName}`}
+        description={`${new Date().toLocaleDateString('en-PK', { weekday: 'long', day: 'numeric', month: 'long' })} · logged in as ${user.fullName}`}
       />
 
       {data.activeAlert ? (

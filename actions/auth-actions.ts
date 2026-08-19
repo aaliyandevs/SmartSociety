@@ -12,7 +12,7 @@ import { changePasswordSchema, loginSchema } from '@/lib/validations/auth';
 import { authenticate, changePassword } from '@/services/auth-service';
 
 /**
- * Sign in.
+ * Login.
  *
  * On success this throws a Next.js redirect, so the caller never sees a
  * "success" state — that is intentional and keeps the credential out of the
@@ -44,7 +44,7 @@ export async function loginAction(
       action: AUDIT_ACTIONS.LOGIN_SUCCESS,
       entityType: 'User',
       entityId: user.id,
-      description: `${user.fullName} signed in as ${user.role}.`,
+      description: `${user.fullName} logged in as ${user.role}.`,
       actor: { id: user.id, name: user.fullName, role: user.role },
     });
 

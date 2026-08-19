@@ -63,7 +63,7 @@ describe('role-based access control', () => {
     expect(hasPermission('MAINTENANCE_STAFF', 'complaint:view-all')).toBe(false);
   });
 
-  it('routes each role to its own landing page after sign-in', () => {
+  it('routes each role to its own landing page after login', () => {
     expect(ROLE_HOME.ADMIN).toBe('/admin');
     expect(ROLE_HOME.RESIDENT).toBe('/resident');
     expect(ROLE_HOME.GUARD).toBe('/guard');

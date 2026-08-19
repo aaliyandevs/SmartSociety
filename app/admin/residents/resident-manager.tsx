@@ -199,7 +199,7 @@ export function ResidentManager({
                     label="Email address"
                     htmlFor="email"
                     required
-                    hint="Used as the sign-in identifier"
+                    hint="Used as the login identifier"
                     errors={fieldErrors(state, 'email')}
                   >
                     <Input id="email" name="email" type="email" required />

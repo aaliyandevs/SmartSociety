@@ -206,7 +206,7 @@ export async function onboardResidentAction(
       userId: result.userId,
       type: 'SYSTEM',
       title: `Welcome to ${(await getSociety()).name}`,
-      body: `Your SmartSociety account for flat ${flatLabel} is ready. Please change your password after signing in.`,
+      body: `Your SmartSociety account for flat ${flatLabel} is ready. Please change your password after logging in.`,
       link: '/account/security',
     });
 

@@ -83,7 +83,7 @@ Revokes the session row, clears the cookie, audits `auth.logout`, redirects to
 | `visitorName` | string | 2–80 chars |
 | `visitorPhone` | string | 11-digit Pakistani mobile |
 | `visitorType` | enum | GUEST · DELIVERY · CAB · VENDOR · SERVICE · OTHER |
-| `vehicleNumber` | string? | Normalised, e.g. `MH12AB1234` |
+| `vehicleNumber` | string? | Normalised, e.g. `LEA1234` |
 | `company` | string? | ≤ 80 chars |
 | `purpose` | string? | ≤ 200 chars |
 | `validFrom` / `validUntil` | datetime | End after start, not already elapsed, ≤ 30 days |

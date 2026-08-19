@@ -59,7 +59,7 @@ export default async function AccountSecurityPage() {
                 <Monitor className="size-4 text-muted-foreground" aria-hidden />
                 Active sessions
               </CardTitle>
-              <CardDescription>Devices currently signed in as you.</CardDescription>
+              <CardDescription>Devices currently logged in as you.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <ul className="divide-y divide-border border-t border-border">
@@ -92,7 +92,7 @@ export default async function AccountSecurityPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
                 <ShieldCheck className="size-4 text-muted-foreground" aria-hidden />
-                Recent sign-in activity
+                Recent login activity
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">

@@ -29,9 +29,9 @@ export default defineConfig({
   },
 
   projects: [
-    // Signs in once per role and saves the session, so the feature specs do not
+    // Logs in once per role and saves the session, so the feature specs do not
     // re-authenticate on every test (which would legitimately trip the
-    // application's per-identifier sign-in rate limit).
+    // application's per-identifier login rate limit).
     { name: 'setup', testMatch: /auth\.setup\.ts/ },
     {
       name: 'desktop-chromium',

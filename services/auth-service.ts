@@ -38,7 +38,7 @@ export async function authenticate(identifier: string, password: string): Promis
     await recordAudit({
       action: AUDIT_ACTIONS.LOGIN_FAILED,
       entityType: 'User',
-      description: `Failed sign-in attempt for unknown account "${identifier}".`,
+      description: `Failed login attempt for unknown account "${identifier}".`,
       metadata: { identifier },
     });
     throw new UnauthorizedError('Invalid email/username or password.');
@@ -72,7 +72,7 @@ export async function authenticate(identifier: string, password: string): Promis
       action: AUDIT_ACTIONS.LOGIN_FAILED,
       entityType: 'User',
       entityId: user.id,
-      description: `Failed sign-in attempt for ${user.email}${shouldLock ? ' — account locked.' : '.'}`,
+      description: `Failed login attempt for ${user.email}${shouldLock ? ' — account locked.' : '.'}`,
       metadata: { attempt: failedCount, locked: shouldLock },
       actor: { id: null, name: user.fullName, role: user.role },
     });
@@ -126,7 +126,7 @@ export async function changePassword(
     data: { passwordHash: await hashPassword(newPassword) },
   });
 
-  // Force every other device to sign in again.
+  // Force every other device to log in again.
   await prisma.session.updateMany({
     where: { userId, revokedAt: null },
     data: { revokedAt: new Date() },

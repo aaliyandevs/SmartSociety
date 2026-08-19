@@ -188,7 +188,7 @@ const SECURITY_POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Gauge,
     title: 'Rate-limited sensitive paths',
-    body: 'Sign-in, gate verification and payment simulation are throttled, and repeated failed logins lock an account temporarily.',
+    body: 'Login, gate verification and payment simulation are throttled, and repeated failed logins lock an account temporarily.',
   },
 ];
 
@@ -216,7 +216,7 @@ export default function HomePage() {
             <ThemeToggle />
             <Button asChild>
               <Link href="/login">
-                Sign in
+                Login
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
@@ -491,7 +491,7 @@ export default function HomePage() {
                 </p>
                 <Button asChild size="lg" variant="secondary" className="mt-6">
                   <Link href="/login">
-                    Sign in to the demo
+                    Login to the demo
                     <ArrowRight className="size-4" />
                   </Link>
                 </Button>
@@ -564,7 +564,7 @@ export default function HomePage() {
                 </li>
                 <li>
                   <Link href="/login" className="hover:text-foreground">
-                    Sign in
+                    Login
                   </Link>
                 </li>
               </ul>

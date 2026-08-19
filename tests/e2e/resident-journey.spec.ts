@@ -7,8 +7,8 @@ import { STORAGE_STATE, expectToast } from './helpers';
  * Login → generate a visitor pass → view the monthly bill → book the clubhouse
  * → log a plumbing ticket → track its SLA.
  *
- * The sign-in step itself is covered in auth.spec.ts; here the saved resident
- * session is reused so each test starts where a signed-in resident would.
+ * The login step itself is covered in auth.spec.ts; here the saved resident
+ * session is reused so each test starts where a logged-in resident would.
  */
 test.describe('resident journey', () => {
   test.use({ storageState: STORAGE_STATE.resident });

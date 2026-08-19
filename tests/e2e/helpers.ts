@@ -36,7 +36,7 @@ export async function signIn(page: Page, account: AccountKey) {
   await page.goto('/login');
   await page.getByLabel('Email or username').fill(email);
   await page.getByLabel('Password', { exact: true }).fill(password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Login' }).click();
 
   await page.waitForURL(new RegExp(`${home}(/|$)`), { timeout: 30_000 });
 }

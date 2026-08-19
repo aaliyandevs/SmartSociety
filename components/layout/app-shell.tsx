@@ -48,7 +48,7 @@ export function AppShell({ user, children, headerActions, density = 'default' }:
           </div>
           <div className="border-t border-sidebar-border px-5 py-3">
             <p className="text-[11px] text-muted-foreground">
-              Signed in as <span className="font-medium text-foreground">{ROLE_LABELS[user.role]}</span>
+              Logged in as <span className="font-medium text-foreground">{ROLE_LABELS[user.role]}</span>
             </p>
           </div>
         </aside>

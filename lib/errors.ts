@@ -23,7 +23,7 @@ export class AppError extends Error {
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(message = 'You must sign in to continue.') {
+  constructor(message = 'You must log in to continue.') {
     super(message, { code: 'UNAUTHORIZED', status: 401 });
     this.name = 'UnauthorizedError';
   }

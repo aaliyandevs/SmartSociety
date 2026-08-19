@@ -7,8 +7,8 @@ import { LoginForm } from '@/app/login/login-form';
 import { publicEnv } from '@/lib/env';
 
 export const metadata: Metadata = {
-  title: 'Sign in',
-  description: 'Sign in to the SmartSociety housing society management system.',
+  title: 'Login',
+  description: 'Login to the SmartSociety housing society management system.',
 };
 
 const HIGHLIGHTS = [
@@ -59,7 +59,7 @@ export default async function LoginPage({
         </p>
       </section>
 
-      {/* Right — sign-in form */}
+      {/* Right — login form */}
       <section className="flex flex-col px-5 py-8 sm:px-8">
         <div className="flex items-center justify-between lg:hidden">
           <BrandLogo href="/" />
@@ -78,7 +78,7 @@ export default async function LoginPage({
               <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <KeyRound className="size-5" aria-hidden />
               </span>
-              <h1 className="text-2xl font-semibold tracking-tight">Sign in to SmartSociety</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">Login to SmartSociety</h1>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
               Use the email address or username registered with the society office.
@@ -89,7 +89,7 @@ export default async function LoginPage({
         </div>
 
         <p className="hidden text-center text-xs text-muted-foreground lg:block">
-          Trouble signing in? Contact the society office at{' '}
+          Trouble logging in? Contact the society office at{' '}
           <span className="font-medium text-foreground">office@smartsociety.local</span>
         </p>
       </section>

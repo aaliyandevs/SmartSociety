@@ -29,7 +29,7 @@ export default function SitemapPage() {
               </Link>
             </Button>
             <Button asChild>
-              <Link href="/login">Sign in</Link>
+              <Link href="/login">Login</Link>
             </Button>
           </div>
         </div>
@@ -40,8 +40,8 @@ export default function SitemapPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Navigation</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Application sitemap</h1>
           <p className="mt-3 text-muted-foreground">
-            {SITEMAP_PAGE_COUNT} screens across {SITEMAP.length} areas. Links open the real page — sign in
-            first, or the app will redirect you to the sign-in screen.
+            {SITEMAP_PAGE_COUNT} screens across {SITEMAP.length} areas. Links open the real page — log in
+            first, or the app will redirect you to the login screen.
           </p>
         </div>
 

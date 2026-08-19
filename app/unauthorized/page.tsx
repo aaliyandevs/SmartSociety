@@ -27,8 +27,8 @@ export default async function UnauthorizedPage() {
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">You do not have access to this area</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {user
-              ? `You are signed in as a ${ROLE_LABELS[user.role]}. This section is restricted to a different role.`
-              : 'Sign in with an account that has permission to view this section.'}
+              ? `You are logged in as a ${ROLE_LABELS[user.role]}. This section is restricted to a different role.`
+              : 'Login with an account that has permission to view this section.'}
           </p>
 
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
@@ -38,7 +38,7 @@ export default async function UnauthorizedPage() {
               </Button>
             ) : (
               <Button asChild>
-                <Link href="/login">Sign in</Link>
+                <Link href="/login">Login</Link>
               </Button>
             )}
             <Button asChild variant="outline">

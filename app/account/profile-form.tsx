@@ -51,7 +51,7 @@ export function ProfileForm({
           label="Email address"
           htmlFor="email"
           required
-          hint="Used for sign-in and billing notifications"
+          hint="Used for login and billing notifications"
           errors={fieldErrors(state, 'email')}
         >
           <Input
