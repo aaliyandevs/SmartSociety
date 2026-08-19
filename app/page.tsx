@@ -28,7 +28,6 @@ import { ThemeToggle } from '@/components/shared/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { DEMO_ACCOUNTS } from '@/lib/demo-accounts';
 import { publicEnv } from '@/lib/env';
 import { SITEMAP_PAGE_COUNT } from '@/lib/sitemap';
 import { ROLE_DESCRIPTIONS } from '@/lib/rbac';
@@ -312,7 +311,7 @@ export default function HomePage() {
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">Gate pass verified</p>
                         <p className="text-xs text-muted-foreground">
-                          Rahul Mehta → Flat A-101 · Main Gate
+                          Ahmed Raza → Flat A-101 · Main Gate
                         </p>
                       </div>
                       <Badge variant="success">Allowed</Badge>
@@ -475,49 +474,27 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Demo credentials + CTA ── */}
+        {/* ── CTA ── */}
         <section className="py-16 sm:py-20">
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="overflow-hidden rounded-2xl border border-border bg-primary text-primary-foreground">
               <div className="surface-grid relative opacity-20" aria-hidden />
-              <div className="grid gap-8 p-8 sm:p-12 lg:grid-cols-2">
-                <div>
-                  <BrandMark className="size-10" />
-                  <h2 className="mt-5 text-3xl font-semibold tracking-tight">
-                    Try it as any of the four roles
-                  </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-primary-foreground/85">
-                    The demo database is seeded with four towers, 48 flats, five months of billing history,
-                    a live helpdesk queue, gate traffic, notices and polls — so every screen has real data
-                    behind it.
-                  </p>
-                  <Button asChild size="lg" variant="secondary" className="mt-6">
-                    <Link href="/login">
-                      Sign in to the demo
-                      <ArrowRight className="size-4" />
-                    </Link>
-                  </Button>
-                </div>
-
-                <div className="space-y-2">
-                  {DEMO_ACCOUNTS.map((account) => (
-                    <div
-                      key={account.email}
-                      className="rounded-lg bg-white/10 p-3 backdrop-blur-sm"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-sm font-semibold">{account.label}</span>
-                        <code className="rounded bg-black/20 px-2 py-0.5 font-mono text-[11px]">
-                          {account.password}
-                        </code>
-                      </div>
-                      <p className="mt-0.5 break-all font-mono text-[11px] text-primary-foreground/80">
-                        {account.email}
-                      </p>
-                      <p className="mt-1 text-[11px] text-primary-foreground/75">{account.blurb}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className="mx-auto max-w-2xl p-8 text-center sm:p-12">
+                <BrandMark className="mx-auto size-10" />
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight">
+                  Try it as any of the four roles
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-primary-foreground/85">
+                  The demo database is seeded with four towers, 48 flats, five months of billing history,
+                  a live helpdesk queue, gate traffic, notices and polls — so every screen has real data
+                  behind it.
+                </p>
+                <Button asChild size="lg" variant="secondary" className="mt-6">
+                  <Link href="/login">
+                    Sign in to the demo
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

@@ -10,11 +10,16 @@ import { cn } from '@/lib/utils';
 import type { ActionState } from '@/lib/action-result';
 
 /** Submit button that automatically shows a spinner while the action runs. */
-export function SubmitButton({ children, loading, ...props }: ButtonProps) {
+export function SubmitButton({
+  children,
+  loading,
+  loadingText,
+  ...props
+}: ButtonProps & { loadingText?: React.ReactNode }) {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" loading={pending || loading} {...props}>
-      {children}
+      {pending && loadingText ? loadingText : children}
     </Button>
   );
 }

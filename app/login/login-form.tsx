@@ -33,7 +33,7 @@ export function LoginForm({ next }: { next?: string }) {
             autoComplete="username"
             autoCapitalize="none"
             spellCheck={false}
-            placeholder="admin@smartsociety.local"
+            placeholder="you@example.com"
             required
             aria-invalid={fieldErrors(state, 'identifier') ? true : undefined}
           />
@@ -62,7 +62,7 @@ export function LoginForm({ next }: { next?: string }) {
           </div>
         </Field>
 
-        <SubmitButton className="w-full" size="lg">
+        <SubmitButton className="w-full" size="lg" loadingText="Signing in…">
           Sign in
         </SubmitButton>
       </form>
