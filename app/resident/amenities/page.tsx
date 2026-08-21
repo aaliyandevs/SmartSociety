@@ -10,7 +10,8 @@ import { EmptyState } from '@/components/ui/feedback';
 import { CancelBookingButton } from '@/app/resident/amenities/cancel-booking-button';
 import { requireResident } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatCurrency, formatDateTime, minutesToLabel, toDateInputValue } from '@/lib/utils';
+import { formatCurrency, formatDateTime, minutesToLabel, pluralize, toDateInputValue } from '@/lib/utils';
+import { zonedMinutesFromMidnight } from '@/lib/timezone';
 import { completeElapsedBookings, getDaySlots } from '@/services/amenity-service';
 
 export const metadata: Metadata = { title: 'Amenity Booking' };
@@ -101,8 +102,8 @@ export default async function ResidentAmenitiesPage({
         date={toDateInputValue(day)}
         slots={slots.map((slot) => ({
           startsAt: slot.startsAt.toISOString(),
-          label: `${minutesToLabel(slot.startsAt.getHours() * 60 + slot.startsAt.getMinutes())}`,
-          endLabel: `${minutesToLabel(slot.endsAt.getHours() * 60 + slot.endsAt.getMinutes())}`,
+          label: `${minutesToLabel(zonedMinutesFromMidnight(slot.startsAt))}`,
+          endLabel: `${minutesToLabel(zonedMinutesFromMidnight(slot.endsAt))}`,
           available: slot.available,
           bookedBy: slot.bookedBy,
           isPast: slot.isPast,
@@ -137,7 +138,7 @@ export default async function ResidentAmenitiesPage({
                         {formatDateTime(booking.startsAt)} — {formatDateTime(booking.endsAt)}
                       </p>
                       <p className="mt-0.5 text-xs text-muted-foreground">
-                        {booking.bookingCode} · {booking.guestsCount} guest(s)
+                        {booking.bookingCode} · {pluralize(booking.guestsCount, 'guest')}
                         {Number(booking.fee) > 0 ? ` · ${formatCurrency(booking.fee)}` : ''}
                       </p>
                     </div>

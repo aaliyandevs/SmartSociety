@@ -215,6 +215,7 @@ async function main() {
       city: 'Lahore',
       state: 'Punjab',
       postalCode: '54000',
+      country: 'Pakistan',
       contactEmail: 'office@smartsociety.local',
       contactPhone: '03001234567',
       penaltyPercent: money(2),
@@ -702,7 +703,11 @@ async function main() {
       const paidProbability = isCurrentMonth ? 0.28 : monthsBack === 1 ? 0.82 : 0.96;
       const isPaid = chance(paidProbability);
       const isOverdue = !isPaid && dueDate < NOW;
-      const penalty = isOverdue ? Math.round(baseAmount * 0.02) : 0;
+      // Matches applyOverduePenalties(): a penalty only applies once the
+      // 5-day grace period configured on the society has actually elapsed,
+      // not from the moment the bill turns overdue.
+      const graceCutoff = new Date(dueDate.getTime() + 5 * 86_400_000);
+      const penalty = isOverdue && graceCutoff < NOW ? Math.round(baseAmount * 0.02) : 0;
       const totalAmount = baseAmount + penalty;
 
       const bill = await prisma.maintenanceBill.create({
@@ -1193,7 +1198,7 @@ async function main() {
     expiresInDays?: number;
   }[] = [
     {
-      title: 'Annual General Body Meeting — 28th of this month',
+      title: 'Annual General Body Meeting',
       content:
         'All members are requested to attend the Annual General Body Meeting to be held in the Clubhouse at 6:00 PM. The agenda includes the audited accounts for the financial year, the revised maintenance structure, the lift modernisation proposal and the election of two managing-committee members.\n\nMembers who cannot attend in person may submit a written proxy at the society office at least 24 hours in advance. Please carry your flat identification.',
       category: NoticeCategory.EVENT,
@@ -1351,10 +1356,10 @@ async function main() {
       showLive: true,
     },
     {
-      title: 'Should visitor parking be limited to two hours?',
+      title: 'Should visitor parking be time-limited?',
       description:
         'Draft proposal awaiting committee review before it is opened to residents for voting.',
-      options: ['Yes, two hours', 'Yes, but four hours', 'No change needed'],
+      options: ['Yes, limit to two hours', 'Yes, limit to four hours', 'No change needed'],
       status: PollStatus.DRAFT,
       startsAgo: -2,
       endsIn: 20,
@@ -1440,7 +1445,7 @@ async function main() {
     {
       type: AlertType.POWER_OUTAGE,
       severity: AlertSeverity.INFO,
-      title: 'Scheduled power shutdown by MSEDCL',
+      title: 'Scheduled power shutdown by LESCO',
       message: 'The distribution company carried out a scheduled shutdown for feeder maintenance. Lifts ran on the DG backup throughout.',
       instructions: 'No action was required from residents.',
       startedAgoHours: 120,
@@ -1591,7 +1596,7 @@ async function main() {
   const auditEntries: Prisma.AuditLogCreateManyInput[] = [
     { userId: admin.id, actorName: admin.fullName, actorRole: Role.ADMIN, action: 'auth.login.success', entityType: 'User', entityId: admin.id, description: `${admin.fullName} signed in as ADMIN.`, ipAddress: '192.168.1.14', createdAt: hoursAgo(3) },
     { userId: admin.id, actorName: admin.fullName, actorRole: Role.ADMIN, action: 'bill.generated', entityType: 'MaintenanceBill', description: `Generated maintenance bills for ${residentByFlat.size} occupied flats.`, metadata: { flats: residentByFlat.size }, ipAddress: '192.168.1.14', createdAt: daysAgo(1, 9) },
-    { userId: admin.id, actorName: admin.fullName, actorRole: Role.ADMIN, action: 'notice.created', entityType: 'Notice', description: 'Published notice "Annual General Body Meeting — 28th of this month".', ipAddress: '192.168.1.14', createdAt: daysAgo(3, 10) },
+    { userId: admin.id, actorName: admin.fullName, actorRole: Role.ADMIN, action: 'notice.created', entityType: 'Notice', description: 'Published notice "Annual General Body Meeting".', ipAddress: '192.168.1.14', createdAt: daysAgo(3, 10) },
     { userId: secretary.id, actorName: secretary.fullName, actorRole: Role.ADMIN, action: 'complaint.assigned', entityType: 'Complaint', description: 'Assigned an elevator ticket to Prakash More (elevator).', createdAt: hoursAgo(26) },
     { userId: admin.id, actorName: admin.fullName, actorRole: Role.ADMIN, action: 'alert.resolved', entityType: 'EmergencyAlert', description: 'Resolved the water shutdown alert after the pump was replaced.', createdAt: hoursAgo(45) },
     { userId: guards[0].userId, actorName: guards[0].name, actorRole: Role.GUARD, action: 'gate.verification', entityType: 'GatePass', description: 'Verified a QR gate pass and approved entry at the Main Gate.', ipAddress: '192.168.1.51', createdAt: hoursAgo(4) },

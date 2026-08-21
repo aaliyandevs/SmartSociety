@@ -14,7 +14,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/feedback';
 import { requireResident } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatRelative, humanise } from '@/lib/utils';
+import { formatRelative, humanise, pluralize } from '@/lib/utils';
 import { getComplaintStats, slaState } from '@/services/complaint-service';
 
 export const metadata: Metadata = { title: 'Complaints' };
@@ -188,7 +188,7 @@ export default async function ResidentComplaintsPage({
                         {complaint._count.attachments > 0 ? (
                           <span>{complaint._count.attachments} photo(s)</span>
                         ) : null}
-                        <span>{complaint._count.updates} update(s)</span>
+                        <span>{pluralize(complaint._count.updates, 'update')}</span>
                       </div>
                     </CardContent>
                   </Link>

@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, EmptyState } from '@/components/ui/feedback';
 import { requireResident } from '@/lib/auth/session';
-import { formatCurrency, formatDate, formatDateTime, formatRelative, humanise } from '@/lib/utils';
+import { formatCurrency, formatDate, formatDateTime, formatInTimeZone, formatRelative, humanise } from '@/lib/utils';
 import { getResidentDashboard } from '@/services/dashboard-service';
 import { slaState } from '@/services/complaint-service';
 
@@ -120,7 +120,7 @@ export default async function ResidentDashboardPage() {
               <CardTitle>Current maintenance bill</CardTitle>
               <CardDescription>
                 {dueBill
-                  ? `${new Date(dueBill.periodYear, dueBill.periodMonth - 1).toLocaleDateString('en-PK', { month: 'long', year: 'numeric' })} · ${dueBill.billNumber}`
+                  ? `${formatInTimeZone(new Date(Date.UTC(dueBill.periodYear, dueBill.periodMonth - 1, 1)), { month: 'long', year: 'numeric' })} · ${dueBill.billNumber}`
                   : 'No invoice has been raised for your flat yet.'}
               </CardDescription>
             </div>

@@ -11,7 +11,7 @@ import { EmptyState } from '@/components/ui/feedback';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { requireResident } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatDateTime, formatRelative, humanise } from '@/lib/utils';
+import { formatDateTime, formatRelative, getPassDisplayStatus, humanise } from '@/lib/utils';
 import { expireStalePasses } from '@/services/gate-service';
 
 export const metadata: Metadata = { title: 'Visitor Passes' };
@@ -48,7 +48,7 @@ function PassCard({
             {pass.visitor.company ? ` · ${pass.visitor.company}` : ''} · {pass.visitor.phone}
           </p>
         </div>
-        <StatusBadge status={pass.status} />
+        <StatusBadge status={getPassDisplayStatus(pass)} />
       </div>
 
       {pass.purpose ? (

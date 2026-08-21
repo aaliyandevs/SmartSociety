@@ -9,8 +9,17 @@ import { ROLE_HOME, ROLE_LABELS } from '@/lib/rbac';
 
 export const metadata: Metadata = { title: 'Access denied' };
 
-export default async function UnauthorizedPage() {
+export default async function UnauthorizedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
   const user = await getCurrentUser();
+  const { from } = await searchParams;
+  // Only ever show a same-origin relative path back — `from` is attacker-
+  // controlled query input, never something to render as a link/URL without
+  // this check.
+  const attemptedPath = from && from.startsWith('/') && !from.startsWith('//') ? from : null;
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -30,6 +39,15 @@ export default async function UnauthorizedPage() {
               ? `You are logged in as a ${ROLE_LABELS[user.role]}. This section is restricted to a different role.`
               : 'Login with an account that has permission to view this section.'}
           </p>
+          {attemptedPath ? (
+            <p className="mt-3 text-xs text-muted-foreground">
+              You tried to open{' '}
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground">
+                {attemptedPath}
+              </code>
+              . Share that with the society office if you think this is a mistake.
+            </p>
+          ) : null}
 
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             {user ? (

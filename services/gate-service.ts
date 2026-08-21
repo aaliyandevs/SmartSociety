@@ -9,6 +9,7 @@ import {
   generatePassCode,
   generateQrToken,
 } from '@/lib/codes';
+import { formatDateTime } from '@/lib/utils';
 import { parseScannedCode } from '@/services/qr-service';
 
 /**
@@ -213,7 +214,7 @@ export async function verifyGateCode(rawCode: string): Promise<VerificationOutco
     return {
       ok: false,
       reason: 'TOO_EARLY',
-      detail: `This pass is not valid yet. It becomes active at ${pass.validFrom.toLocaleString('en-PK')}.`,
+      detail: `This pass is not valid yet. It becomes active at ${formatDateTime(pass.validFrom)}.`,
       pass: shaped,
     };
   }
@@ -226,7 +227,7 @@ export async function verifyGateCode(rawCode: string): Promise<VerificationOutco
     return {
       ok: false,
       reason: 'EXPIRED',
-      detail: `This pass expired at ${pass.validUntil.toLocaleString('en-PK')}. Ask the resident to issue a new one.`,
+      detail: `This pass expired at ${formatDateTime(pass.validUntil)}. Ask the resident to issue a new one.`,
       pass: shaped,
     };
   }
@@ -252,7 +253,7 @@ export async function verifyGateCode(rawCode: string): Promise<VerificationOutco
     return {
       ok: false,
       reason: 'ALREADY_INSIDE',
-      detail: `This visitor is already recorded inside (entered ${openLog.entryAt?.toLocaleString('en-PK') ?? 'earlier'}). Record an exit before scanning again.`,
+      detail: `This visitor is already recorded inside (entered ${openLog.entryAt ? formatDateTime(openLog.entryAt) : 'earlier'}). Record an exit before scanning again.`,
       pass: shaped,
     };
   }

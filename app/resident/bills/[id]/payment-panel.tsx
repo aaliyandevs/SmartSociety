@@ -23,7 +23,7 @@ import { idleState } from '@/lib/action-result';
 import { cn, formatCurrency } from '@/lib/utils';
 
 const METHODS: { value: string; label: string; icon: LucideIcon; hint: string }[] = [
-  { value: 'UPI', label: 'UPI', icon: Smartphone, hint: 'JazzCash, Easypaisa' },
+  { value: 'UPI', label: 'Raast', icon: Smartphone, hint: 'JazzCash, Easypaisa' },
   { value: 'CARD', label: 'Card', icon: CreditCard, hint: 'Debit or credit' },
   { value: 'NETBANKING', label: 'Net banking', icon: Landmark, hint: 'Any Pakistani bank' },
   { value: 'WALLET', label: 'Wallet', icon: Wallet, hint: 'Prepaid balance' },
@@ -135,9 +135,8 @@ export function PaymentPanel({
           )}
 
           <Alert variant="info" hideIcon className="text-xs">
-            Payment gateway processing and bank reconciliation are <strong>simulated</strong> in this build,
-            as scoped by the requirements specification. A receipt with a transaction reference is generated
-            exactly as it would be with a live gateway.
+            Payment gateway processing and bank reconciliation are <strong>simulated</strong> in this build.
+            A receipt with a transaction reference is generated exactly as it would be with a live gateway.
           </Alert>
 
           <SubmitButton size="lg" className="w-full">

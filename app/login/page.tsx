@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { ArrowLeft, KeyRound, QrCode, ShieldCheck, Wrench } from 'lucide-react';
 
 import { BrandLogo } from '@/components/shared/brand';
 import { LoginForm } from '@/app/login/login-form';
 import { publicEnv } from '@/lib/env';
+import { getCurrentUser, homeForRole } from '@/lib/auth/session';
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -24,8 +26,20 @@ export default async function LoginPage({
 }) {
   const { next } = await searchParams;
 
+  // Belt-and-braces alongside the same check in middleware.ts: a signed-in
+  // visitor should never see a bare sign-in form for the account they're
+  // already in.
+  const currentUser = await getCurrentUser();
+  if (currentUser) redirect(homeForRole(currentUser.role));
+
   return (
-    <div className="grid min-h-dvh lg:grid-cols-2">
+    // `h-dvh` (not `min-h-dvh`) pins the grid row to exactly the viewport
+    // height, so the teal panel and the form column are always the same
+    // height as each other and as the viewport — a `min-h` here let the form
+    // column's own content quietly grow the row taller than the screen,
+    // which stretched the panel past the fold and left a strip of the plain
+    // background peeking out below it.
+    <div className="grid h-dvh lg:grid-cols-2">
       {/* Left — brand panel (hidden on small screens to keep the form above the fold) */}
       <section className="relative hidden overflow-hidden bg-primary text-primary-foreground lg:flex lg:flex-col lg:justify-between lg:p-10">
         <div className="surface-grid absolute inset-0 opacity-20" aria-hidden />
@@ -59,8 +73,9 @@ export default async function LoginPage({
         </p>
       </section>
 
-      {/* Right — login form */}
-      <section className="flex flex-col px-5 py-8 sm:px-8">
+      {/* Right — login form. Scrolls internally on its own if the viewport
+          is too short for its content, rather than growing the whole page. */}
+      <section className="flex flex-col overflow-y-auto px-5 py-8 sm:px-8">
         <div className="flex items-center justify-between lg:hidden">
           <BrandLogo href="/" />
           <Link

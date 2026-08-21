@@ -28,7 +28,7 @@ import {
   verifyGateCode,
   type VerifiedPass,
 } from '@/services/gate-service';
-import { humanise } from '@/lib/utils';
+import { formatDateTime, humanise } from '@/lib/utils';
 
 /**
  * Visitor pre-approval (residents) and gate verification (guards).
@@ -91,7 +91,7 @@ export async function createGatePassAction(
       userId: user.id,
       type: 'GATE_PASS_CREATED',
       title: 'Visitor pass created',
-      body: `${input.visitorName} can enter using gate code ${pass.gateCode} until ${input.validUntil.toLocaleString('en-PK')}.`,
+      body: `${input.visitorName} can enter using gate code ${pass.gateCode} until ${formatDateTime(input.validUntil)}.`,
       link: `/resident/visitors/${pass.id}`,
       entityType: 'GatePass',
       entityId: pass.id,

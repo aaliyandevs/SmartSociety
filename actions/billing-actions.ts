@@ -9,7 +9,7 @@ import { ForbiddenError, NotFoundError } from '@/lib/errors';
 import { notifyFlat } from '@/lib/notifications';
 import prisma from '@/lib/prisma';
 import { enforceRateLimit } from '@/lib/rate-limit';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatDate, formatInTimeZone } from '@/lib/utils';
 import {
   applyPenaltiesSchema,
   generateBillsSchema,
@@ -75,7 +75,7 @@ export async function generateBillsAction(
       generatedById: user.id,
     });
 
-    const period = new Date(input.periodYear, input.periodMonth - 1, 1).toLocaleDateString('en-PK', {
+    const period = formatInTimeZone(new Date(Date.UTC(input.periodYear, input.periodMonth - 1, 1)), {
       month: 'long',
       year: 'numeric',
     });
@@ -105,7 +105,7 @@ export async function generateBillsAction(
           notifyFlat(bill.flatId, {
             type: 'BILL_GENERATED',
             title: `Maintenance bill for ${period}`,
-            body: `Invoice ${bill.billNumber} for ${formatCurrency(Number(bill.totalAmount))} is due on ${bill.dueDate.toLocaleDateString('en-PK')}.`,
+            body: `Invoice ${bill.billNumber} for ${formatCurrency(Number(bill.totalAmount))} is due on ${formatDate(bill.dueDate)}.`,
             link: '/resident/bills',
             entityType: 'MaintenanceBill',
             entityId: bill.id,

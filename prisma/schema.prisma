@@ -272,7 +272,7 @@ model Society {
   city           String
   state          String
   postalCode     String
-  country        String   @default("India")
+  country        String   @default("Pakistan")
   contactEmail   String
   contactPhone   String
   logoUrl        String?

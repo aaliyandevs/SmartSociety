@@ -4,6 +4,7 @@ import { Prisma, type NoticeAudience, type Role } from '@prisma/client';
 
 import prisma from '@/lib/prisma';
 import { ConflictError, NotFoundError } from '@/lib/errors';
+import { formatDateTime } from '@/lib/utils';
 
 /**
  * Notice board, digital polling and emergency alerts
@@ -90,7 +91,7 @@ export async function castVote(input: { pollId: string; optionId: string; reside
   if (poll.status === 'DRAFT') throw new ConflictError('This poll has not opened yet.');
   if (poll.status === 'CLOSED' || poll.endsAt < now) throw new ConflictError('This poll has closed.');
   if (poll.startsAt > now) {
-    throw new ConflictError(`Voting opens on ${poll.startsAt.toLocaleString('en-PK')}.`);
+    throw new ConflictError(`Voting opens on ${formatDateTime(poll.startsAt)}.`);
   }
 
   const option = await prisma.pollOption.findFirst({

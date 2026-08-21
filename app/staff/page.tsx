@@ -71,7 +71,7 @@ export default async function StaffDashboardPage() {
 
       {data.dueSoon > 0 ? (
         <Alert variant="warning" title="SLA deadline approaching">
-          {data.dueSoon} of your open ticket{data.dueSoon === 1 ? ' is' : 's are'} due within the next four
+          {data.dueSoon} of your open tickets {data.dueSoon === 1 ? 'is' : 'are'} due within the next four
           hours.
         </Alert>
       ) : null}
@@ -99,7 +99,7 @@ export default async function StaffDashboardPage() {
         />
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
+      <section className="grid items-start gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
             <div>

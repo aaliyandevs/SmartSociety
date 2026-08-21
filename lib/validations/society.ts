@@ -136,7 +136,7 @@ export const societySettingsSchema = z.object({
   addressLine2: optionalText(160),
   city: z.string().trim().min(2).max(60),
   state: z.string().trim().min(2).max(60),
-  postalCode: z.string().trim().regex(/^\d{6}$/, 'Enter a 6-digit PIN code'),
+  postalCode: z.string().trim().regex(/^\d{5}$/, 'Enter a 5-digit postal code'),
   contactEmail: emailSchema,
   contactPhone: phoneSchema,
   guidelines: z.string().trim().max(20_000).optional(),

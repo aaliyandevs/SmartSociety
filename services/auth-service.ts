@@ -74,7 +74,12 @@ export async function authenticate(identifier: string, password: string): Promis
       entityId: user.id,
       description: `Failed login attempt for ${user.email}${shouldLock ? ' — account locked.' : '.'}`,
       metadata: { attempt: failedCount, locked: shouldLock },
-      actor: { id: null, name: user.fullName, role: user.role },
+      // A failed sign-in has no authenticated actor — attributing it to the
+      // account owner would make the audit log read as though they did it
+      // themselves, which is exactly backwards if that account ever gets
+      // brute-forced. The attempted identifier is already in the
+      // description; actorName left null renders as "System" in the log.
+      actor: null,
     });
 
     throw new UnauthorizedError('Invalid email/username or password.');

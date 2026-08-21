@@ -5,6 +5,8 @@ import { type Amenity, Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { AppError, ConflictError, NotFoundError } from '@/lib/errors';
 import { generateBookingCode } from '@/lib/codes';
+import { zonedMinutesFromMidnight, zonedTimeToUtc } from '@/lib/timezone';
+import { toDateInputValue } from '@/lib/utils';
 
 /**
  * Facility & amenity booking (SRS §1.6, Residents #5).
@@ -31,7 +33,9 @@ export async function getDaySlots(
   day: Date,
   currentResidentId?: string | null,
 ): Promise<Slot[]> {
-  const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0);
+  // Midnight for `day`'s calendar date in the society's own timezone — not
+  // the runtime's local midnight, which is UTC on the server.
+  const dayStart = zonedTimeToUtc(`${toDateInputValue(day)}T00:00`);
   const dayEnd = new Date(dayStart.getTime() + 86_400_000);
 
   const bookings = await prisma.amenityBooking.findMany({
@@ -118,8 +122,9 @@ export async function createBooking(input: CreateBookingInput) {
     });
   }
 
-  // The slot must line up with the amenity's grid.
-  const minutesFromMidnight = input.startsAt.getHours() * 60 + input.startsAt.getMinutes();
+  // The slot must line up with the amenity's grid (openMinute/closeMinute are
+  // minutes-from-midnight in the society's own timezone, not the server's).
+  const minutesFromMidnight = zonedMinutesFromMidnight(input.startsAt);
   const offset = minutesFromMidnight - amenity.openMinute;
   if (offset < 0 || offset % amenity.slotMinutes !== 0) {
     throw new AppError('That start time is not one of the bookable slots.', {

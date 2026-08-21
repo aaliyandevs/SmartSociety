@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { MONTH_NAMES, formatCurrency, formatDate } from '@/lib/utils';
+import { MONTH_NAMES, formatCurrency, formatDate, pluralize } from '@/lib/utils';
 import { getCollectionSummary, refreshOverdueStatuses } from '@/services/billing-service';
 
 export const metadata: Metadata = { title: 'Maintenance Bills' };
@@ -120,7 +120,7 @@ export default async function AdminBillsPage({
         <StatCard
           label="Outstanding"
           value={formatCurrency(summary.outstanding)}
-          hint={`${overdueCount} invoice(s) overdue`}
+          hint={`${pluralize(overdueCount, 'invoice')} overdue`}
           icon={FileWarning}
           tone={summary.outstanding > 0 ? 'warning' : 'success'}
         />
@@ -134,7 +134,10 @@ export default async function AdminBillsPage({
       </section>
 
       {overdueCount > 0 ? (
-        <Alert variant="warning" title={`${overdueCount} invoice(s) are past their due date`}>
+        <Alert
+          variant="warning"
+          title={`${pluralize(overdueCount, 'invoice')} ${overdueCount === 1 ? 'is' : 'are'} past their due date`}
+        >
           Run <strong>Apply penalties</strong> to add the society&apos;s late-payment charge to every
           eligible invoice. Each application is recorded in the audit log.
         </Alert>

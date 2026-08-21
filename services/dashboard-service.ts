@@ -1,6 +1,7 @@
 import 'server-only';
 
 import prisma from '@/lib/prisma';
+import { startOfZonedDay } from '@/lib/timezone';
 import { getCollectionSummary, getMonthlyCollectionTrend } from '@/services/billing-service';
 import { getComplaintStats } from '@/services/complaint-service';
 
@@ -12,11 +13,8 @@ import { getComplaintStats } from '@/services/complaint-service';
  * per tile (NFR: page response under 1.5 s).
  */
 
-const startOfToday = () => {
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  return date;
-};
+// "Today" in the society's own timezone — not the server's (see lib/timezone.ts).
+const startOfToday = () => startOfZonedDay(new Date());
 
 // ── Administrator ─────────────────────────────────────────────────────────────
 
@@ -47,7 +45,7 @@ export async function getAdminDashboard() {
     }),
     prisma.residentProfile.count({ where: { deletedAt: null } }),
     prisma.gateLog.count({ where: { entryAt: { gte: todayStart, lt: tomorrowStart } } }),
-    prisma.gatePass.count({ where: { status: 'ACTIVE', validUntil: { gt: new Date() } } }),
+    prisma.gatePass.count({ where: { status: 'ACTIVE', validFrom: { lte: new Date() }, validUntil: { gt: new Date() } } }),
     prisma.gateLog.count({ where: { status: 'INSIDE' } }),
     getComplaintStats(),
     getCollectionSummary(),
@@ -181,7 +179,7 @@ export async function getResidentDashboard(residentId: string, flatId: string) {
       },
     }),
     prisma.gatePass.findMany({
-      where: { residentId, status: 'ACTIVE', validUntil: { gt: now } },
+      where: { residentId, status: 'ACTIVE', validFrom: { lte: now }, validUntil: { gt: now } },
       orderBy: { validFrom: 'asc' },
       take: 4,
       include: { visitor: true },
@@ -338,12 +336,14 @@ export async function getStaffDashboard(staffId: string) {
       where: { assignedStaffId: staffId, deletedAt: null },
       _count: { _all: true },
     }),
+    // "Due soon" means still ahead of us and inside the warning window — a
+    // ticket whose SLA already passed is breached, not "due in 4 hours".
     prisma.complaint.count({
       where: {
         assignedStaffId: staffId,
         deletedAt: null,
         status: { in: ['PENDING', 'IN_PROGRESS'] },
-        slaDueAt: { lt: soon },
+        slaDueAt: { gte: now, lt: soon },
       },
     }),
     prisma.complaint.findMany({

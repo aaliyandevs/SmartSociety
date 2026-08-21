@@ -6,13 +6,17 @@ import { Eye, EyeOff } from 'lucide-react';
 
 import { Alert } from '@/components/ui/feedback';
 import { Input } from '@/components/ui/input';
-import { Field, SubmitButton, fieldErrors } from '@/components/shared/form';
+import { Field, SubmitButton, fieldErrors, useFormValues } from '@/components/shared/form';
 import { loginAction } from '@/actions/auth-actions';
 import { idleState } from '@/lib/action-result';
 
 export function LoginForm({ next }: { next?: string }) {
   const [state, formAction] = useActionState(loginAction, idleState);
   const [showPassword, setShowPassword] = React.useState(false);
+  // The password is meant to clear on a failed attempt; the identifier isn't
+  // — nobody wants to retype their email every time they fat-finger a
+  // password (see components/shared/form.tsx for why this is needed at all).
+  const identifier = useFormValues(state, { identifier: '' });
 
   return (
     <div className="mt-7 space-y-6">
@@ -25,7 +29,7 @@ export function LoginForm({ next }: { next?: string }) {
           </Alert>
         ) : null}
 
-        <Field label="Email or username" htmlFor="identifier" required errors={fieldErrors(state, 'identifier')}>
+        <Field label="Email or username" htmlFor="identifier" required errors={identifier.errors('identifier')}>
           <Input
             id="identifier"
             name="identifier"
@@ -35,7 +39,9 @@ export function LoginForm({ next }: { next?: string }) {
             spellCheck={false}
             placeholder="you@example.com"
             required
-            aria-invalid={fieldErrors(state, 'identifier') ? true : undefined}
+            value={identifier.values.identifier}
+            onChange={(e) => identifier.set('identifier', e.target.value)}
+            aria-invalid={identifier.errors('identifier') ? true : undefined}
           />
         </Field>
 

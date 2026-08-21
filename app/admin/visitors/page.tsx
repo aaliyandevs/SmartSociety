@@ -20,7 +20,8 @@ import {
 } from '@/components/ui/table';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatDateTime, formatRelative, humanise } from '@/lib/utils';
+import { formatDateTime, formatRelative, getPassDisplayStatus, humanise } from '@/lib/utils';
+import { startOfZonedDay } from '@/lib/timezone';
 import { expireStalePasses } from '@/services/gate-service';
 
 export const metadata: Metadata = { title: 'Visitors' };
@@ -55,7 +56,7 @@ export default async function AdminVisitorsPage({
   };
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayStart = startOfZonedDay(now);
 
   const [passes, total, activeCount, visitorsToday, insideNow, byType] = await Promise.all([
     prisma.gatePass.findMany({
@@ -71,7 +72,10 @@ export default async function AdminVisitorsPage({
       },
     }),
     prisma.gatePass.count({ where }),
-    prisma.gatePass.count({ where: { status: 'ACTIVE', validUntil: { gt: now } } }),
+    // "Active" means genuinely usable right now — started, not yet expired —
+    // not just "not cancelled/expired/used" (a pass scheduled for tomorrow
+    // still carries the ACTIVE enum value until its window opens).
+    prisma.gatePass.count({ where: { status: 'ACTIVE', validFrom: { lte: now }, validUntil: { gt: now } } }),
     prisma.gateLog.count({ where: { entryAt: { gte: todayStart } } }),
     prisma.gateLog.count({ where: { status: 'INSIDE' } }),
     prisma.visitor.groupBy({
@@ -193,7 +197,7 @@ export default async function AdminVisitorsPage({
                       {pass.entriesUsed}/{pass.maxEntries}
                     </TableCell>
                     <TableCell>
-                      <StatusBadge status={pass.status} />
+                      <StatusBadge status={getPassDisplayStatus(pass)} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -212,7 +216,7 @@ export default async function AdminVisitorsPage({
                         {humanise(pass.visitorType)} → Flat {pass.flat.block.name}-{pass.flat.flatNumber}
                       </p>
                     </div>
-                    <StatusBadge status={pass.status} />
+                    <StatusBadge status={getPassDisplayStatus(pass)} />
                   </div>
                   <p className="text-xs text-muted-foreground">
                     Valid until {formatDateTime(pass.validUntil)} ({formatRelative(pass.validUntil)})

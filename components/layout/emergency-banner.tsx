@@ -137,7 +137,7 @@ function AlertBanner({ alert, onDismiss }: { alert: LiveAlert; onDismiss: () => 
 }
 
 export function EmergencyBanner() {
-  const { activeAlert } = useLiveFeed(30_000);
+  const { activeAlert } = useLiveFeed();
   const [dismissedId, setDismissedId] = React.useState<string | null>(null);
 
   if (!activeAlert || activeAlert.id === dismissedId) return null;

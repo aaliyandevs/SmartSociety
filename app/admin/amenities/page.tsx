@@ -13,7 +13,7 @@ import { Alert, EmptyState } from '@/components/ui/feedback';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatCurrency, formatDateTime, minutesToLabel } from '@/lib/utils';
+import { formatCurrency, formatDateTime, minutesToLabel, pluralize } from '@/lib/utils';
 import { completeElapsedBookings } from '@/services/amenity-service';
 
 export const metadata: Metadata = { title: 'Amenities' };
@@ -195,7 +195,7 @@ export default async function AdminAmenitiesPage() {
                       </p>
                       <p className="mt-0.5 text-sm">
                         Flat {booking.flat.block.name}-{booking.flat.flatNumber} ·{' '}
-                        {booking.resident.user.fullName} · {booking.guestsCount} guest(s)
+                        {booking.resident.user.fullName} · {pluralize(booking.guestsCount, 'guest')}
                       </p>
                       {booking.purpose ? (
                         <p className="mt-1 text-xs text-muted-foreground">{booking.purpose}</p>

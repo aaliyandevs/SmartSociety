@@ -47,6 +47,11 @@ export const PUBLIC_SECTION: SitemapSection = {
         { label: 'Home', href: '/', description: 'Product overview, features and this sitemap.' },
         { label: 'Sitemap', href: '/sitemap', description: 'Full map of every screen in the system.' },
         { label: 'Login', href: '/login', description: 'Role-based login for all four account types.' },
+        {
+          label: 'Access denied',
+          href: '/unauthorized',
+          description: 'Shown when a signed-in account opens a section its role cannot use.',
+        },
       ],
     },
   ],

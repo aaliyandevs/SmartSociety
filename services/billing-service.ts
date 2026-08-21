@@ -5,6 +5,7 @@ import { type BillStatus, type ChargeType, type PaymentMethod, Prisma } from '@p
 import prisma from '@/lib/prisma';
 import { AppError, ConflictError, NotFoundError } from '@/lib/errors';
 import { generateBillNumber, generateReceiptNumber, generateTransactionRef } from '@/lib/codes';
+import { formatInTimeZone } from '@/lib/utils';
 
 /**
  * Maintenance billing engine.
@@ -247,11 +248,20 @@ export async function simulatePayment(input: SimulatePaymentInput): Promise<Paym
     const outstanding = Number(bill.totalAmount) - Number(bill.paidAmount);
     if (outstanding <= 0) throw new ConflictError('This invoice has no outstanding balance.');
 
-    const amount = input.amount && input.amount > 0 ? Math.min(input.amount, outstanding) : outstanding;
+    const amount = input.amount && input.amount > 0 ? input.amount : outstanding;
     if (amount <= 0) {
       throw new AppError('Enter an amount greater than zero.', {
         fieldErrors: { amount: ['Enter an amount greater than zero.'] },
       });
+    }
+    // Reject an overpayment outright rather than silently rewriting it down
+    // to the outstanding balance — someone who fat-fingers an extra digit
+    // deserves to be told, not charged a different number than they typed.
+    if (amount - outstanding > 0.009) {
+      throw new AppError(
+        `That's more than the outstanding balance of Rs ${outstanding.toFixed(2)}.`,
+        { fieldErrors: { amount: [`Cannot exceed the outstanding balance of Rs ${outstanding.toFixed(2)}.`] } },
+      );
     }
 
     const newPaid = Number((Number(bill.paidAmount) + amount).toFixed(2));
@@ -385,7 +395,7 @@ export async function getMonthlyCollectionTrend(months = 6) {
   return periods.map((period) => {
     const entry = lookup.get(`${period.year}-${period.month}`) ?? { billed: 0, collected: 0 };
     return {
-      label: new Date(period.year, period.month - 1, 1).toLocaleDateString('en-PK', {
+      label: formatInTimeZone(new Date(Date.UTC(period.year, period.month - 1, 1)), {
         month: 'short',
       }),
       year: period.year,

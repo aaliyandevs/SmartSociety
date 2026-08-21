@@ -45,6 +45,7 @@ const STATUS_VARIANTS: Record<string, BadgeVariant> = {
   URGENT: 'destructive',
 
   // Gate passes & logs
+  SCHEDULED: 'info',
   USED: 'muted',
   EXPIRED: 'muted',
   REJECTED: 'destructive',

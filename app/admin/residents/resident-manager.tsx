@@ -28,14 +28,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Field, FormGrid, SubmitButton, fieldErrors, useActionFeedback } from '@/components/shared/form';
+import {
+  Field,
+  FormGrid,
+  PasswordField,
+  SubmitButton,
+  fieldErrors,
+  useActionFeedback,
+  useFormValues,
+} from '@/components/shared/form';
 import {
   offboardResidentAction,
   onboardResidentAction,
   updateResidentAction,
 } from '@/actions/society-actions';
 import { idleState } from '@/lib/action-result';
-import { toDateInputValue } from '@/lib/utils';
+import { pluralize, toDateInputValue } from '@/lib/utils';
 
 export interface FlatChoice {
   id: string;
@@ -99,6 +107,40 @@ export function ResidentManager({
   const state = resident ? updateState : createState;
   const action = resident ? updateAction : createAction;
 
+  const blankForm = React.useMemo(
+    () => ({
+      fullName: '',
+      email: '',
+      phone: '',
+      alternatePhone: '',
+      flatId: '',
+      residentType: 'OWNER',
+      moveInDate: toDateInputValue(new Date()),
+      occupation: '',
+      password: '',
+      isPrimary: true,
+    }),
+    [],
+  );
+  const formInitial = resident
+    ? {
+        fullName: resident.fullName,
+        email: resident.email,
+        phone: resident.phone,
+        alternatePhone: resident.alternatePhone ?? '',
+        flatId: resident.flatId,
+        residentType: resident.residentType,
+        moveInDate: resident.moveInDate,
+        occupation: resident.occupation ?? '',
+        password: '',
+        isPrimary: resident.isPrimary,
+      }
+    : blankForm;
+  // Preserves what was typed across a failed submission (React otherwise
+  // resets every uncontrolled field once the action call resolves, error or
+  // not), and clears a field's error the moment it's edited.
+  const form = useFormValues(state, formInitial);
+
   return (
     <div className="flex items-center justify-end gap-1">
       <Dialog
@@ -106,6 +148,7 @@ export function ResidentManager({
         onOpenChange={(next) => {
           setOpen(next);
           if (!next) setTempPassword(null);
+          else form.reset(formInitial);
         }}
       >
         <DialogTrigger asChild>
@@ -179,14 +222,15 @@ export function ResidentManager({
                   label="Full name"
                   htmlFor="fullName"
                   required
-                  errors={fieldErrors(state, 'fullName')}
+                  errors={form.errors('fullName')}
                 >
                   <Input
                     id="fullName"
                     name="fullName"
                     required
                     maxLength={80}
-                    defaultValue={resident?.fullName}
+                    value={form.values.fullName}
+                    onChange={(e) => form.set('fullName', e.target.value)}
                   />
                 </Field>
 
@@ -200,9 +244,16 @@ export function ResidentManager({
                     htmlFor="email"
                     required
                     hint="Used as the login identifier"
-                    errors={fieldErrors(state, 'email')}
+                    errors={form.errors('email')}
                   >
-                    <Input id="email" name="email" type="email" required />
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={form.values.email}
+                      onChange={(e) => form.set('email', e.target.value)}
+                    />
                   </Field>
                 )}
               </FormGrid>
@@ -212,7 +263,7 @@ export function ResidentManager({
                   label="Mobile number"
                   htmlFor="phone"
                   required
-                  errors={fieldErrors(state, 'phone')}
+                  errors={form.errors('phone')}
                 >
                   <Input
                     id="phone"
@@ -220,28 +271,34 @@ export function ResidentManager({
                     inputMode="numeric"
                     required
                     maxLength={11}
-                    defaultValue={resident?.phone}
+                    value={form.values.phone}
+                    onChange={(e) => form.set('phone', e.target.value)}
                   />
                 </Field>
 
                 <Field
                   label="Alternate number"
                   htmlFor="alternatePhone"
-                  errors={fieldErrors(state, 'alternatePhone')}
+                  errors={form.errors('alternatePhone')}
                 >
                   <Input
                     id="alternatePhone"
                     name="alternatePhone"
                     inputMode="numeric"
                     maxLength={11}
-                    defaultValue={resident?.alternatePhone ?? ''}
+                    value={form.values.alternatePhone}
+                    onChange={(e) => form.set('alternatePhone', e.target.value)}
                   />
                 </Field>
               </FormGrid>
 
               <FormGrid>
-                <Field label="Flat" htmlFor="flatId" required errors={fieldErrors(state, 'flatId')}>
-                  <Select name="flatId" defaultValue={resident?.flatId ?? ''}>
+                <Field label="Flat" htmlFor="flatId" required errors={form.errors('flatId')}>
+                  <Select
+                    name="flatId"
+                    value={form.values.flatId}
+                    onValueChange={(value) => value && form.set('flatId', value)}
+                  >
                     <SelectTrigger id="flatId">
                       <SelectValue placeholder="Select a flat" />
                     </SelectTrigger>
@@ -249,7 +306,7 @@ export function ResidentManager({
                       {flats.map((flat) => (
                         <SelectItem key={flat.id} value={flat.id}>
                           {flat.label}
-                          {flat.residentCount > 0 ? ` · ${flat.residentCount} resident(s)` : ' · vacant'}
+                          {flat.residentCount > 0 ? ` · ${pluralize(flat.residentCount, 'resident')}` : ' · vacant'}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -260,9 +317,13 @@ export function ResidentManager({
                   label="Resident type"
                   htmlFor="residentType"
                   required
-                  errors={fieldErrors(state, 'residentType')}
+                  errors={form.errors('residentType')}
                 >
-                  <Select name="residentType" defaultValue={resident?.residentType ?? 'OWNER'}>
+                  <Select
+                    name="residentType"
+                    value={form.values.residentType}
+                    onValueChange={(value) => value && form.set('residentType', value)}
+                  >
                     <SelectTrigger id="residentType">
                       <SelectValue />
                     </SelectTrigger>
@@ -279,23 +340,25 @@ export function ResidentManager({
                   label="Move-in date"
                   htmlFor="moveInDate"
                   required
-                  errors={fieldErrors(state, 'moveInDate')}
+                  errors={form.errors('moveInDate')}
                 >
                   <Input
                     id="moveInDate"
                     name="moveInDate"
                     type="date"
                     required
-                    defaultValue={resident?.moveInDate ?? toDateInputValue(new Date())}
+                    value={form.values.moveInDate}
+                    onChange={(e) => form.set('moveInDate', e.target.value)}
                   />
                 </Field>
 
-                <Field label="Occupation" htmlFor="occupation" errors={fieldErrors(state, 'occupation')}>
+                <Field label="Occupation" htmlFor="occupation" errors={form.errors('occupation')}>
                   <Input
                     id="occupation"
                     name="occupation"
                     maxLength={80}
-                    defaultValue={resident?.occupation ?? ''}
+                    value={form.values.occupation}
+                    onChange={(e) => form.set('occupation', e.target.value)}
                   />
                 </Field>
               </FormGrid>
@@ -318,9 +381,16 @@ export function ResidentManager({
                   label="Password"
                   htmlFor="password"
                   hint="Leave blank to generate a temporary password"
-                  errors={fieldErrors(state, 'password')}
+                  errors={form.errors('password')}
                 >
-                  <Input id="password" name="password" type="text" minLength={8} autoComplete="off" />
+                  <PasswordField
+                    id="password"
+                    name="password"
+                    minLength={8}
+                    autoComplete="off"
+                    value={form.values.password}
+                    onChange={(e) => form.set('password', e.target.value)}
+                  />
                 </Field>
               )}
 
@@ -329,7 +399,8 @@ export function ResidentManager({
                   id="isPrimary"
                   name="isPrimary"
                   value="true"
-                  defaultChecked={resident?.isPrimary ?? true}
+                  checked={form.values.isPrimary}
+                  onCheckedChange={(checked) => form.set('isPrimary', checked === true)}
                 />
                 <Label htmlFor="isPrimary" className="font-normal">
                   Primary contact for this flat (receives billing notifications)

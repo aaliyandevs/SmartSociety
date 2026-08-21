@@ -466,14 +466,22 @@ export async function updateStaff(input: {
   });
 }
 
-/** Occupancy map for the admin flats page. */
-export async function getOccupancyMap() {
+/**
+ * Occupancy map for the admin flats page. `occupancyStatus`/`blockId` mirror
+ * the same query params the unit-list tab filters on, so switching to the
+ * map tab keeps showing what was just filtered for instead of silently
+ * reverting to every block.
+ */
+export async function getOccupancyMap(filter?: {
+  occupancyStatus?: Prisma.EnumOccupancyStatusFilter['equals'];
+  blockId?: string;
+}) {
   const blocks = await prisma.block.findMany({
-    where: { deletedAt: null },
+    where: { deletedAt: null, ...(filter?.blockId ? { id: filter.blockId } : {}) },
     orderBy: { name: 'asc' },
     include: {
       flats: {
-        where: { deletedAt: null },
+        where: { deletedAt: null, ...(filter?.occupancyStatus ? { occupancyStatus: filter.occupancyStatus } : {}) },
         orderBy: [{ floor: 'desc' }, { flatNumber: 'asc' }],
         include: {
           residents: {

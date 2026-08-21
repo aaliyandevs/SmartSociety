@@ -73,6 +73,15 @@ export function BillingRunDialog({ blocks }: { blocks: { id: string; name: strin
   });
 
   const now = new Date();
+  // Derived from the society's own timezone (see lib/timezone.ts), not the
+  // admin's own device clock — an admin travelling abroad shouldn't be
+  // offered "today" as a different calendar day than Lahore's.
+  const [todayYear, todayMonth] = toDateInputValue(now).split('-').map(Number);
+  // A due date defaulting to a fixed "the 15th" could already be in the past
+  // by the time the run is generated (e.g. running the cycle on the 20th) —
+  // two weeks out is always ahead of "now", whatever day this is run on.
+  const defaultDueDate = toDateInputValue(new Date(now.getTime() + 14 * 86_400_000));
+  const todayInputValue = toDateInputValue(now);
   const commonTotal = charges.reduce((sum, charge) => sum + (Number(charge.amount) || 0), 0);
 
   function updateCharge(key: string, patch: Partial<ChargeRow>) {
@@ -111,7 +120,7 @@ export function BillingRunDialog({ blocks }: { blocks: { id: string; name: strin
               required
               errors={fieldErrors(state, 'periodMonth')}
             >
-              <Select name="periodMonth" defaultValue={String(now.getMonth() + 1)}>
+              <Select name="periodMonth" defaultValue={String(todayMonth)}>
                 <SelectTrigger id="periodMonth">
                   <SelectValue />
                 </SelectTrigger>
@@ -133,7 +142,7 @@ export function BillingRunDialog({ blocks }: { blocks: { id: string; name: strin
                 min={2020}
                 max={2100}
                 required
-                defaultValue={now.getFullYear()}
+                defaultValue={todayYear}
               />
             </Field>
 
@@ -143,7 +152,8 @@ export function BillingRunDialog({ blocks }: { blocks: { id: string; name: strin
                 name="dueDate"
                 type="date"
                 required
-                defaultValue={toDateInputValue(new Date(now.getFullYear(), now.getMonth(), 15))}
+                min={todayInputValue}
+                defaultValue={defaultDueDate}
               />
             </Field>
           </FormGrid>
