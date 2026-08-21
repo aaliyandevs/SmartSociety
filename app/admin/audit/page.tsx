@@ -96,9 +96,8 @@ export default async function AdminAuditPage({
       />
 
       <Alert variant="info" title="This log is append-only">
-        Entries can never be edited or deleted from within the application, which is what the
-        specification&apos;s audit-logging requirement asks for. Gate entries, complaint status changes and
-        administrative financial edits are all captured here.
+        Entries can never be edited or deleted from within the application. Gate entries, complaint status
+        changes and administrative financial edits are all captured here.
       </Alert>
 
       <section className="grid gap-4 grid-cols-2 xl:grid-cols-4">

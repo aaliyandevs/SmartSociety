@@ -38,7 +38,7 @@ import {
   type VerificationView,
 } from '@/actions/gate-actions';
 import { idleState } from '@/lib/action-result';
-import { cn, formatDateTime, humanise } from '@/lib/utils';
+import { cn, formatDateTime, getPassDisplayStatus, humanise } from '@/lib/utils';
 
 /**
  * Two-step gate clearance.
@@ -294,7 +294,7 @@ export function VerifyConsole({ gates, defaultGate }: { gates: string[]; default
                     ['Phone', result.pass.visitor.phone],
                     ['Flat', result.pass.flat.label],
                     ['Host', result.pass.host.name],
-                    ['Pass status', humanise(result.pass.status)],
+                    ['Pass status', humanise(getPassDisplayStatus(result.pass))],
                     ['Window', `${formatDateTime(result.pass.validFrom)} — ${formatDateTime(result.pass.validUntil)}`],
                   ].map(([label, value]) => (
                     <div key={label}>
@@ -350,7 +350,7 @@ export function VerifyConsole({ gates, defaultGate }: { gates: string[]; default
                       {result.pass!.visitor.phone}
                     </p>
                   </div>
-                  <StatusBadge status={result.pass!.status} />
+                  <StatusBadge status={getPassDisplayStatus(result.pass!)} />
                 </div>
 
                 <dl className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">

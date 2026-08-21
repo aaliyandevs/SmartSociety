@@ -101,25 +101,33 @@ export default async function AdminPollsPage() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                    <span className="text-muted-foreground">
-                      {tally.total} vote{tally.total === 1 ? '' : 's'} · {turnout}% turnout
-                    </span>
-                  </div>
-
-                  {tally.results.map((result) => (
-                    <div key={result.optionId}>
-                      <div className="mb-1 flex items-center justify-between gap-3 text-sm">
-                        <span className="min-w-0">{result.label}</span>
-                        <span className="tabular shrink-0 text-muted-foreground">
-                          {result.percent}% · {result.votes}
-                        </span>
-                      </div>
-                      <Progress value={result.percent} />
+                {poll.status === 'DRAFT' ? (
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      Not open for voting yet — results appear here once it&apos;s published.
+                    </p>
+                  </CardContent>
+                ) : (
+                  <CardContent className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                      <span className="text-muted-foreground">
+                        {tally.total} vote{tally.total === 1 ? '' : 's'} · {turnout}% turnout
+                      </span>
                     </div>
-                  ))}
-                </CardContent>
+
+                    {tally.results.map((result) => (
+                      <div key={result.optionId}>
+                        <div className="mb-1 flex items-center justify-between gap-3 text-sm">
+                          <span className="min-w-0">{result.label}</span>
+                          <span className="tabular shrink-0 text-muted-foreground">
+                            {result.percent}% · {result.votes}
+                          </span>
+                        </div>
+                        <Progress value={result.percent} />
+                      </div>
+                    ))}
+                  </CardContent>
+                )}
               </Card>
             );
           })}

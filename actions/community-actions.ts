@@ -9,7 +9,7 @@ import { ConflictError, NotFoundError } from '@/lib/errors';
 import { notifyRoles } from '@/lib/notifications';
 import prisma from '@/lib/prisma';
 import { enforceRateLimit } from '@/lib/rate-limit';
-import { humanise } from '@/lib/utils';
+import { formatDate, humanise } from '@/lib/utils';
 import {
   emergencyAlertSchema,
   noticeSchema,
@@ -264,7 +264,7 @@ export async function savePollAction(
       await notifyRoles(['RESIDENT'], {
         type: 'POLL_OPENED',
         title: 'New community poll',
-        body: `${created.title} — voting closes ${created.endsAt.toLocaleDateString('en-PK')}.`,
+        body: `${created.title} — voting closes ${formatDate(created.endsAt)}.`,
         link: '/resident/polls',
         entityType: 'Poll',
         entityId: created.id,

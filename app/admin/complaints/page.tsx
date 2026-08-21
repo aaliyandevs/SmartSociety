@@ -13,7 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, EmptyState } from '@/components/ui/feedback';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatRelative, humanise } from '@/lib/utils';
+import { formatRelative, humanise, pluralize } from '@/lib/utils';
 import { getComplaintStats, slaState } from '@/services/complaint-service';
 
 export const metadata: Metadata = { title: 'Complaints' };
@@ -124,7 +124,10 @@ export default async function AdminComplaintsPage({
       </section>
 
       {unassigned > 0 ? (
-        <Alert variant="warning" title={`${unassigned} open ticket(s) have no technician assigned`}>
+        <Alert
+          variant="warning"
+          title={`${pluralize(unassigned, 'open ticket')} ${unassigned === 1 ? 'has' : 'have'} no technician assigned`}
+        >
           Open a ticket to route it — the assignment panel recommends the technician whose department
           matches the complaint category and who has the lightest workload.
         </Alert>

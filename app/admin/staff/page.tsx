@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/table';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatDate, humanise, initials } from '@/lib/utils';
+import { formatDate, humanise, initials, pluralize } from '@/lib/utils';
 import { staffListInclude } from '@/services/society-service';
 
 export const metadata: Metadata = { title: 'Maintenance Staff' };
@@ -211,7 +211,7 @@ export default async function AdminStaffPage({
                     </Badge>
                     {member.user.role === 'MAINTENANCE_STAFF' ? (
                       <span className="text-xs text-muted-foreground">
-                        {member._count.assignedComplaints} open ticket(s)
+                        {pluralize(member._count.assignedComplaints, 'open ticket')}
                       </span>
                     ) : null}
                   </div>

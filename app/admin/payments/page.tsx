@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/table';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatCurrency, formatDateTime, humanise } from '@/lib/utils';
+import { formatCurrency, formatDateTime, humanise, pluralize } from '@/lib/utils';
 
 export const metadata: Metadata = { title: 'Payments' };
 
@@ -97,9 +97,8 @@ export default async function AdminPaymentsPage({
       />
 
       <Alert variant="info" hideIcon>
-        Payment gateway processing and bank reconciliation are <strong>simulated</strong> for this build,
-        as scoped by the requirements specification (§1.4). Receipts and transaction references are
-        generated exactly as they would be with a live gateway.
+        Payment gateway processing and bank reconciliation are <strong>simulated</strong> in this build.
+        Receipts and transaction references are generated exactly as they would be with a live gateway.
       </Alert>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -113,7 +112,7 @@ export default async function AdminPaymentsPage({
         <StatCard
           label="This month"
           value={formatCurrency(monthTotal._sum.amount ?? 0)}
-          hint={`${monthTotal._count} payment(s)`}
+          hint={pluralize(monthTotal._count, 'payment')}
           icon={CreditCard}
         />
         <StatCard
@@ -134,7 +133,10 @@ export default async function AdminPaymentsPage({
           label="Average payment"
           value={
             totals._count > 0
-              ? formatCurrency(Number(totals._sum.amount ?? 0) / totals._count)
+              // Rounded to a whole rupee — every other money figure in the
+              // app is a sum of whole-rupee charges and never shows a
+              // fraction; only this division naturally would.
+              ? formatCurrency(Math.round(Number(totals._sum.amount ?? 0) / totals._count))
               : formatCurrency(0)
           }
         />
@@ -170,7 +172,7 @@ export default async function AdminPaymentsPage({
                 name: 'method',
                 label: 'Method',
                 options: [
-                  { value: 'UPI', label: 'UPI' },
+                  { value: 'UPI', label: 'Raast' },
                   { value: 'CARD', label: 'Card' },
                   { value: 'NETBANKING', label: 'Net banking' },
                   { value: 'WALLET', label: 'Wallet' },

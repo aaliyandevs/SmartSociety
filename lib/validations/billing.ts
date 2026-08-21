@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { cuidSchema, dateSchema, moneySchema, optionalText } from '@/lib/validations/common';
+import { startOfZonedDay } from '@/lib/timezone';
 
 export const chargeTypeSchema = z.enum([
   'MAINTENANCE',
@@ -34,8 +35,11 @@ export const generateBillsSchema = z
     blockId: z.union([cuidSchema, z.literal('')]).optional(),
     notes: optionalText(300),
   })
-  .refine((data) => data.dueDate.getTime() > Date.now() - 365 * 24 * 60 * 60 * 1000, {
-    message: 'Pick a realistic due date',
+  .refine((data) => data.dueDate.getTime() >= startOfZonedDay(new Date()).getTime(), {
+    // A billing run's whole point is to invoice residents going forward — a
+    // due date already in the past would make every invoice it creates
+    // instantly overdue.
+    message: 'The due date cannot be in the past',
     path: ['dueDate'],
   });
 

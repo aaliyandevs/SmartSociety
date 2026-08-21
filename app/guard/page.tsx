@@ -22,7 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, EmptyState } from '@/components/ui/feedback';
 import { ExitButton } from '@/app/guard/exit-button';
 import { requireRole } from '@/lib/auth/session';
-import { formatDateTime, formatRelative, formatTime, humanise } from '@/lib/utils';
+import { formatDateTime, formatInTimeZone, formatRelative, formatTime, humanise } from '@/lib/utils';
 import { getGuardDashboard } from '@/services/dashboard-service';
 import { expireStalePasses } from '@/services/gate-service';
 
@@ -46,7 +46,7 @@ export default async function GuardDashboardPage() {
       <PageHeader
         eyebrow={user.gateAssignment ?? 'Security'}
         title="Gate console"
-        description={`${new Date().toLocaleDateString('en-PK', { weekday: 'long', day: 'numeric', month: 'long' })} · logged in as ${user.fullName}`}
+        description={`${formatInTimeZone(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · logged in as ${user.fullName}`}
       />
 
       {data.activeAlert ? (
@@ -159,7 +159,7 @@ export default async function GuardDashboardPage() {
                     </span>
                     <span className="mt-0.5 block text-xs text-destructive">
                       Expected out {formatRelative(log.expectedExitAt)} · entered{' '}
-                      {formatTime(log.entryAt)}
+                      {formatDateTime(log.entryAt)}
                     </span>
                   </span>
                   <span className="flex shrink-0 gap-2">

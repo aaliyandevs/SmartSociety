@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { zonedTimeToUtc } from '@/lib/timezone';
+
 /** Shared primitives so validation messages stay consistent across every form. */
 
 export const cuidSchema = z.string().min(1, 'Required').max(64);
@@ -54,11 +56,17 @@ export const paginationSchema = z.object({
 
 export type Pagination = z.infer<typeof paginationSchema>;
 
-/** Turns "2026-03-18T14:30" (datetime-local) or an ISO string into a Date. */
+/**
+ * Turns "2026-03-18T14:30" (datetime-local) or an ISO string into a Date.
+ *
+ * A bare datetime-local value has no timezone of its own — it's read as a
+ * wall-clock time in the society's own timezone (see `lib/timezone.ts`),
+ * not whatever zone the server process happens to be running in.
+ */
 export const dateTimeSchema = z
   .union([z.string().min(1), z.date()])
   .transform((value, ctx) => {
-    const date = value instanceof Date ? value : new Date(value);
+    const date = value instanceof Date ? value : zonedTimeToUtc(value);
     if (Number.isNaN(date.getTime())) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Enter a valid date and time' });
       return z.NEVER;

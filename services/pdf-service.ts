@@ -2,6 +2,7 @@ import 'server-only';
 
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
 
+import { DEFAULT_TIME_ZONE } from '@/lib/timezone';
 import type { BillDetail } from '@/services/billing-service';
 
 /**
@@ -29,7 +30,12 @@ const money = (value: number) =>
 
 const formatDate = (date: Date | null | undefined) =>
   date
-    ? new Intl.DateTimeFormat('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }).format(date)
+    ? new Intl.DateTimeFormat('en-PK', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        timeZone: DEFAULT_TIME_ZONE,
+      }).format(date)
     : '—';
 
 const formatDateTime = (date: Date | null | undefined) =>
@@ -40,6 +46,7 @@ const formatDateTime = (date: Date | null | undefined) =>
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
+        timeZone: DEFAULT_TIME_ZONE,
       }).format(date)
     : '—';
 
@@ -101,10 +108,11 @@ export async function buildReceiptPdf(data: ReceiptData): Promise<Uint8Array> {
   const outstanding = Number((totalAmount - paidAmount).toFixed(2));
   const primary = bill.flat.residents[0];
   const flatLabel = `${bill.flat.block.name}-${bill.flat.flatNumber}`;
-  const period = new Date(bill.periodYear, bill.periodMonth - 1, 1).toLocaleDateString('en-PK', {
+  const period = new Intl.DateTimeFormat('en-PK', {
     month: 'long',
     year: 'numeric',
-  });
+    timeZone: DEFAULT_TIME_ZONE,
+  }).format(new Date(Date.UTC(bill.periodYear, bill.periodMonth - 1, 1)));
 
   const ctx: Ctx = { page, regular, bold, y: PAGE_HEIGHT - MARGIN };
 

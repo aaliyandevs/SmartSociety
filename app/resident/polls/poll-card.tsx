@@ -102,7 +102,7 @@ export function PollCard({
       </CardHeader>
 
       <CardContent>
-        {showResults || !isOpen ? (
+        {poll.status !== 'DRAFT' && (showResults || !isOpen) ? (
           <div className="space-y-3">
             {results.map((result) => {
               const isMine = result.optionId === votedOptionId;

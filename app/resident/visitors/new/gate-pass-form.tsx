@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Field, FormGrid, SubmitButton, fieldErrors, useActionFeedback } from '@/components/shared/form';
+import { Field, FormGrid, SubmitButton, useActionFeedback, useFormValues } from '@/components/shared/form';
 import { createGatePassAction } from '@/actions/gate-actions';
 import { idleState } from '@/lib/action-result';
 import { cn, toDateTimeInputValue } from '@/lib/utils';
@@ -41,6 +41,19 @@ export function GatePassForm() {
   const [state, formAction] = useActionState(createGatePassAction, idleState);
   const [visitorType, setVisitorType] = React.useState<string>('GUEST');
   const [window] = React.useState(defaultWindow);
+  // Keeps everything typed so far on the form after a failed submission —
+  // otherwise every field (including the dates) reverts to its starting
+  // default the moment the server comes back with an error to show.
+  const form = useFormValues(state, {
+    visitorName: '',
+    visitorPhone: '',
+    vehicleNumber: '',
+    company: '',
+    maxEntries: '1',
+    validFrom: window.from,
+    validUntil: window.until,
+    purpose: '',
+  });
 
   useActionFeedback(state, {
     onSuccess: (data) => {
@@ -95,9 +108,17 @@ export function GatePassForm() {
           label="Visitor name"
           htmlFor="visitorName"
           required
-          errors={fieldErrors(state, 'visitorName')}
+          errors={form.errors('visitorName')}
         >
-          <Input id="visitorName" name="visitorName" placeholder="Ahmed Raza" required maxLength={80} />
+          <Input
+            id="visitorName"
+            name="visitorName"
+            placeholder="Ahmed Raza"
+            required
+            maxLength={80}
+            value={form.values.visitorName}
+            onChange={(e) => form.set('visitorName', e.target.value)}
+          />
         </Field>
 
         <Field
@@ -105,7 +126,7 @@ export function GatePassForm() {
           htmlFor="visitorPhone"
           required
           hint="11-digit Pakistani mobile number"
-          errors={fieldErrors(state, 'visitorPhone')}
+          errors={form.errors('visitorPhone')}
         >
           <Input
             id="visitorPhone"
@@ -114,6 +135,8 @@ export function GatePassForm() {
             placeholder="03001234567"
             required
             maxLength={11}
+            value={form.values.visitorPhone}
+            onChange={(e) => form.set('visitorPhone', e.target.value)}
           />
         </Field>
       </FormGrid>
@@ -123,7 +146,7 @@ export function GatePassForm() {
           label="Vehicle number"
           htmlFor="vehicleNumber"
           hint="Optional — helps the guard at the barrier"
-          errors={fieldErrors(state, 'vehicleNumber')}
+          errors={form.errors('vehicleNumber')}
         >
           <Input
             id="vehicleNumber"
@@ -131,21 +154,34 @@ export function GatePassForm() {
             placeholder="LEA1234"
             className="uppercase"
             maxLength={14}
+            value={form.values.vehicleNumber}
+            onChange={(e) => form.set('vehicleNumber', e.target.value)}
           />
         </Field>
 
         {needsCompany ? (
-          <Field label="Company" htmlFor="company" errors={fieldErrors(state, 'company')}>
-            <Input id="company" name="company" placeholder="Amazon, Uber, Godrej…" maxLength={80} />
+          <Field label="Company" htmlFor="company" errors={form.errors('company')}>
+            <Input
+              id="company"
+              name="company"
+              placeholder="Daraz, Careem, TCS…"
+              maxLength={80}
+              value={form.values.company}
+              onChange={(e) => form.set('company', e.target.value)}
+            />
           </Field>
         ) : (
           <Field
             label="Number of entries"
             htmlFor="maxEntries"
             hint="Use more than one for a vendor visiting repeatedly"
-            errors={fieldErrors(state, 'maxEntries')}
+            errors={form.errors('maxEntries')}
           >
-            <Select name="maxEntries" defaultValue="1">
+            <Select
+              name="maxEntries"
+              value={form.values.maxEntries}
+              onValueChange={(value) => value && form.set('maxEntries', value)}
+            >
               <SelectTrigger id="maxEntries">
                 <SelectValue />
               </SelectTrigger>
@@ -166,9 +202,13 @@ export function GatePassForm() {
           label="Number of entries"
           htmlFor="maxEntriesAlt"
           hint="Use more than one for a vendor visiting repeatedly"
-          errors={fieldErrors(state, 'maxEntries')}
+          errors={form.errors('maxEntries')}
         >
-          <Select name="maxEntries" defaultValue="1">
+          <Select
+            name="maxEntries"
+            value={form.values.maxEntries}
+            onValueChange={(value) => value && form.set('maxEntries', value)}
+          >
             <SelectTrigger id="maxEntriesAlt" className="sm:max-w-xs">
               <SelectValue />
             </SelectTrigger>
@@ -188,14 +228,15 @@ export function GatePassForm() {
           label="Valid from"
           htmlFor="validFrom"
           required
-          errors={fieldErrors(state, 'validFrom')}
+          errors={form.errors('validFrom')}
         >
           <Input
             id="validFrom"
             name="validFrom"
             type="datetime-local"
-            defaultValue={window.from}
             required
+            value={form.values.validFrom}
+            onChange={(e) => form.set('validFrom', e.target.value)}
           />
         </Field>
 
@@ -203,14 +244,15 @@ export function GatePassForm() {
           label="Valid until"
           htmlFor="validUntil"
           required
-          errors={fieldErrors(state, 'validUntil')}
+          errors={form.errors('validUntil')}
         >
           <Input
             id="validUntil"
             name="validUntil"
             type="datetime-local"
-            defaultValue={window.until}
             required
+            value={form.values.validUntil}
+            onChange={(e) => form.set('validUntil', e.target.value)}
           />
         </Field>
       </FormGrid>
@@ -219,7 +261,7 @@ export function GatePassForm() {
         label="Purpose of visit"
         htmlFor="purpose"
         hint="Optional — shown to the guard"
-        errors={fieldErrors(state, 'purpose')}
+        errors={form.errors('purpose')}
       >
         <Textarea
           id="purpose"
@@ -227,6 +269,8 @@ export function GatePassForm() {
           placeholder="Weekend guests staying over, furniture delivery, AC servicing…"
           rows={3}
           maxLength={200}
+          value={form.values.purpose}
+          onChange={(e) => form.set('purpose', e.target.value)}
         />
       </Field>
 

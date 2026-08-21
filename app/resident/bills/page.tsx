@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { requireResident } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { MONTH_NAMES, formatCurrency, formatDate } from '@/lib/utils';
+import { MONTH_NAMES, formatCurrency, formatDate, pluralize } from '@/lib/utils';
 import { refreshOverdueStatuses } from '@/services/billing-service';
 
 export const metadata: Metadata = { title: 'Maintenance Bills' };
@@ -53,7 +53,10 @@ export default async function ResidentBillsPage() {
       />
 
       {overdueCount > 0 ? (
-        <Alert variant="destructive" title={`${overdueCount} invoice(s) are past their due date`}>
+        <Alert
+          variant="destructive"
+          title={`${pluralize(overdueCount, 'invoice')} ${overdueCount === 1 ? 'is' : 'are'} past their due date`}
+        >
           A late-payment penalty applies after the grace period. Settle them from the list below.
         </Alert>
       ) : null}

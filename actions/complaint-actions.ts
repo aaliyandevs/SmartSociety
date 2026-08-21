@@ -9,7 +9,7 @@ import { AppError, ForbiddenError, NotFoundError } from '@/lib/errors';
 import { notify, notifyRoles } from '@/lib/notifications';
 import prisma from '@/lib/prisma';
 import { enforceRateLimit } from '@/lib/rate-limit';
-import { humanise } from '@/lib/utils';
+import { formatDateTime, humanise } from '@/lib/utils';
 import {
   complaintAssignSchema,
   complaintCreateSchema,
@@ -178,7 +178,7 @@ export async function assignComplaintAction(
       userId: staffUserId,
       type: 'COMPLAINT_ASSIGNED',
       title: 'New ticket assigned to you',
-      body: `${complaint.ticketNumber} — ${complaint.title} (flat ${flatLabel}). Due ${complaint.slaDueAt.toLocaleString('en-PK')}.`,
+      body: `${complaint.ticketNumber} — ${complaint.title} (flat ${flatLabel}). Due ${formatDateTime(complaint.slaDueAt)}.`,
       link: `/staff/tickets/${complaint.id}`,
       entityType: 'Complaint',
       entityId: complaint.id,

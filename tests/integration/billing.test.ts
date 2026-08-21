@@ -1,6 +1,6 @@
 import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
-import { ConflictError } from '@/lib/errors';
+import { AppError, ConflictError } from '@/lib/errors';
 import {
   applyOverduePenalties,
   generateMonthlyBills,
@@ -160,7 +160,7 @@ describe('payment simulation', () => {
     expect(result.outstanding).toBe(2500);
   });
 
-  it('never over-credits a bill when paying twice', async () => {
+  it('never over-credits a bill, and rejects rather than silently clamping an overpayment', async () => {
     const bill = await firstBill();
     await simulatePayment({
       billId: bill.id,
@@ -168,14 +168,30 @@ describe('payment simulation', () => {
       method: 'UPI',
       amount: 3000,
     });
-    // Asking to pay more than the balance settles only the balance.
+
+    // Asking to pay more than the remaining balance must be refused outright
+    // — rewriting it down to the balance without telling the payer would
+    // mean charging them a different amount than they typed.
+    await expect(
+      simulatePayment({
+        billId: bill.id,
+        residentId: baseline.resident.residentId,
+        method: 'UPI',
+        amount: 9999,
+      }),
+    ).rejects.toThrow(AppError);
+
+    const afterRejected = await prisma.maintenanceBill.findUniqueOrThrow({ where: { id: bill.id } });
+    expect(Number(afterRejected.paidAmount)).toBe(3000);
+    expect(afterRejected.status).toBe('PARTIALLY_PAID');
+
+    // Paying exactly the remaining balance still succeeds.
     const second = await simulatePayment({
       billId: bill.id,
       residentId: baseline.resident.residentId,
       method: 'UPI',
-      amount: 9999,
+      amount: 1000,
     });
-
     expect(second.amount).toBe(1000);
 
     const updated = await prisma.maintenanceBill.findUniqueOrThrow({ where: { id: bill.id } });

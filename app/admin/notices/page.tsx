@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Eye, EyeOff, Megaphone, Pin } from 'lucide-react';
+import { Archive, Eye, Megaphone, Pin } from 'lucide-react';
 
 import { PageHeader } from '@/components/shared/page-header';
 import { StatCard } from '@/components/shared/stat-card';
@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/feedback';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatDate, formatDateTime, humanise, toDateTimeInputValue, truncate } from '@/lib/utils';
+import { formatDate, formatDateTime, humanise, pluralize, toDateTimeInputValue, truncate } from '@/lib/utils';
 import type { Prisma } from '@prisma/client';
 
 export const metadata: Metadata = { title: 'Notices' };
@@ -44,7 +44,7 @@ export default async function AdminNoticesPage({
       : {}),
   };
 
-  const [notices, published, scheduled, pinned] = await Promise.all([
+  const [notices, published, scheduled, pinned, totalOnRecord] = await Promise.all([
     prisma.notice.findMany({
       where,
       orderBy: [{ isPinned: 'desc' }, { publishAt: 'desc' }],
@@ -57,6 +57,10 @@ export default async function AdminNoticesPage({
     prisma.notice.count({ where: { deletedAt: null, isPublished: true, publishAt: { lte: now } } }),
     prisma.notice.count({ where: { deletedAt: null, isPublished: true, publishAt: { gt: now } } }),
     prisma.notice.count({ where: { deletedAt: null, isPinned: true } }),
+    // A genuine independent count — `notices` above is capped at 60 and
+    // narrowed by whatever filter is active, so it can't double as "every
+    // notice that's ever existed" the way this stat is meant to.
+    prisma.notice.count({ where: { deletedAt: null } }),
   ]);
 
   return (
@@ -72,7 +76,7 @@ export default async function AdminNoticesPage({
         <StatCard label="Live notices" value={published} icon={Megaphone} tone="success" />
         <StatCard label="Scheduled" value={scheduled} icon={Eye} tone="info" />
         <StatCard label="Pinned" value={pinned} icon={Pin} />
-        <StatCard label="Total on record" value={notices.length} icon={EyeOff} />
+        <StatCard label="Total on record" value={totalOnRecord} icon={Archive} />
       </section>
 
       <FilterBar
@@ -145,7 +149,7 @@ export default async function AdminNoticesPage({
                         {notice.expiresAt ? <span>Expires {formatDate(notice.expiresAt)}</span> : null}
                         {notice.eventDate ? <span>Event {formatDate(notice.eventDate)}</span> : null}
                         <span>Audience: {humanise(notice.audience)}</span>
-                        <span>{notice._count.reads} read(s)</span>
+                        <span>{pluralize(notice._count.reads, 'read')}</span>
                         {notice.author ? <span>by {notice.author.fullName}</span> : null}
                       </p>
                     </div>

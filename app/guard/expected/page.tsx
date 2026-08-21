@@ -10,7 +10,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/feedback';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatDateTime, formatRelative, humanise } from '@/lib/utils';
+import { formatDateTime, formatRelative, getPassDisplayStatus, humanise } from '@/lib/utils';
+import { startOfZonedDay } from '@/lib/timezone';
 import { expireStalePasses } from '@/services/gate-service';
 
 export const metadata: Metadata = { title: 'Expected Visitors' };
@@ -20,7 +21,7 @@ export default async function ExpectedVisitorsPage() {
   await expireStalePasses();
 
   const now = new Date();
-  const endOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+  const endOfTomorrow = new Date(startOfZonedDay(now).getTime() + 2 * 86_400_000);
 
   const passes = await prisma.gatePass.findMany({
     where: { status: 'ACTIVE', validUntil: { gt: now }, validFrom: { lt: endOfTomorrow } },
@@ -43,9 +44,9 @@ export default async function ExpectedVisitorsPage() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-semibold">{pass.visitor.name}</p>
-                <StatusBadge status={pass.status} />
+                <StatusBadge status={getPassDisplayStatus(pass)} />
                 {pass.validFrom > now ? (
-                  <Badge variant="muted">from {formatRelative(pass.validFrom)}</Badge>
+                  <Badge variant="muted">Starts {formatRelative(pass.validFrom)}</Badge>
                 ) : null}
               </div>
               <p className="mt-0.5 text-sm text-muted-foreground">

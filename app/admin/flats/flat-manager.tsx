@@ -29,7 +29,7 @@ import { ConfirmAction } from '@/components/shared/confirm-action';
 import { Field, FormGrid, SubmitButton, fieldErrors, useActionFeedback } from '@/components/shared/form';
 import { archiveFlatAction, createBlockAction, saveFlatAction } from '@/actions/society-actions';
 import { idleState } from '@/lib/action-result';
-import { humanise } from '@/lib/utils';
+import { humanise, pluralize } from '@/lib/utils';
 
 export interface BlockOption {
   id: string;
@@ -261,7 +261,7 @@ export function FlatManager({ blocks, flat }: { blocks: BlockOption[]; flat?: Fl
 
           {flat && flat.residentCount > 0 ? (
             <Alert variant="info">
-              This unit has {flat.residentCount} resident(s) on record. Offboard them from the Residents
+              This unit has {pluralize(flat.residentCount, 'resident')} on record. Offboard them from the Residents
               page before marking it vacant.
             </Alert>
           ) : null}

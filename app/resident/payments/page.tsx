@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import { requireResident } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { MONTH_NAMES, formatCurrency, formatDateTime, humanise } from '@/lib/utils';
+import { MONTH_NAMES, formatCurrency, formatDateTime, humanise, pluralize } from '@/lib/utils';
 
 export const metadata: Metadata = { title: 'Payment History' };
 
@@ -54,14 +54,14 @@ export default async function ResidentPaymentsPage() {
         <StatCard
           label="Total paid"
           value={formatCurrency(totals._sum.amount ?? 0)}
-          hint={`${totals._count} payment(s)`}
+          hint={pluralize(totals._count, 'payment')}
           icon={CreditCard}
           tone="success"
         />
         <StatCard
           label={`Paid in ${new Date().getFullYear()}`}
           value={formatCurrency(thisYearTotal)}
-          hint={`${thisYear.length} payment(s) this year`}
+          hint={`${pluralize(thisYear.length, 'payment')} this year`}
           icon={Receipt}
         />
         <StatCard

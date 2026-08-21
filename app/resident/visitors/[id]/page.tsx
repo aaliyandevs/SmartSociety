@@ -14,7 +14,7 @@ import { Alert, EmptyState } from '@/components/ui/feedback';
 import { Separator } from '@/components/ui/misc';
 import { requireResident } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatDateTime, formatRelative, humanise } from '@/lib/utils';
+import { formatDateTime, formatRelative, getPassDisplayStatus, humanise } from '@/lib/utils';
 import { renderQrDataUrl } from '@/services/qr-service';
 
 export const metadata: Metadata = { title: 'Visitor Pass' };
@@ -96,7 +96,7 @@ export default async function GatePassDetailPage({ params }: { params: Promise<{
         {/* ── The pass itself ── */}
         <Card className="lg:col-span-2">
           <CardHeader className="items-center text-center">
-            <StatusBadge status={pass.status} />
+            <StatusBadge status={getPassDisplayStatus(pass)} />
             <CardTitle className="mt-1">Show this at the gate</CardTitle>
             <CardDescription>The guard can scan the code or type the number below.</CardDescription>
           </CardHeader>
@@ -166,7 +166,7 @@ export default async function GatePassDetailPage({ params }: { params: Promise<{
                 <Button asChild variant="outline" size="sm">
                   <a
                     href={`sms:${pass.visitor.phone}?body=${encodeURIComponent(
-                      `Your gate pass for flat ${pass.flat.block.name}-${pass.flat.flatNumber}: gate code ${pass.gateCode}, valid until ${pass.validUntil.toLocaleString('en-PK')}.`,
+                      `Your gate pass for flat ${pass.flat.block.name}-${pass.flat.flatNumber}: gate code ${pass.gateCode}, valid until ${formatDateTime(pass.validUntil)}.`,
                     )}`}
                   >
                     Send the code by SMS

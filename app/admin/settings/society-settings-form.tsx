@@ -124,13 +124,13 @@ export function SocietySettingsForm({
         <Field label="State" htmlFor="state" required errors={fieldErrors(state, 'state')}>
           <Input id="state" name="state" required maxLength={60} defaultValue={defaults.state} />
         </Field>
-        <Field label="PIN code" htmlFor="postalCode" required errors={fieldErrors(state, 'postalCode')}>
+        <Field label="Postal code" htmlFor="postalCode" required errors={fieldErrors(state, 'postalCode')}>
           <Input
             id="postalCode"
             name="postalCode"
             required
             inputMode="numeric"
-            maxLength={6}
+            maxLength={5}
             defaultValue={defaults.postalCode}
           />
         </Field>

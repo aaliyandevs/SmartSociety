@@ -78,7 +78,10 @@ export default async function AdminFlatsPage({
       where: { deletedAt: null },
       _count: { _all: true },
     }),
-    getOccupancyMap(),
+    getOccupancyMap({
+      occupancyStatus: params.status as Prisma.EnumOccupancyStatusFilter['equals'] | undefined,
+      blockId: params.block,
+    }),
   ]);
 
   const stats = { OCCUPIED: 0, VACANT: 0, UNDER_MAINTENANCE: 0 };

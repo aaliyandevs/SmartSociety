@@ -27,7 +27,7 @@ import {
   OccupancyDonut,
 } from '@/components/charts/dashboard-charts';
 import { requireRole } from '@/lib/auth/session';
-import { formatCurrency, formatDateTime, formatRelative, humanise } from '@/lib/utils';
+import { formatCurrency, formatDateTime, formatRelative, humanise, timeOfDayGreeting } from '@/lib/utils';
 import { getAdminDashboard } from '@/services/dashboard-service';
 import { refreshOverdueStatuses } from '@/services/billing-service';
 import { expireStalePasses } from '@/services/gate-service';
@@ -57,7 +57,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <PageHeader
         eyebrow="Administration"
-        title={`Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, ${user.fullName.split(' ')[0]}`}
+        title={`Good ${timeOfDayGreeting()}, ${user.fullName.split(' ')[0]}`}
         description="Live operational picture of the society — occupancy, collections, security and the helpdesk queue."
         actions={
           <>
@@ -179,7 +179,7 @@ export default async function AdminDashboardPage() {
         </Card>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
+      <section className="grid items-start gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>Helpdesk by category</CardTitle>

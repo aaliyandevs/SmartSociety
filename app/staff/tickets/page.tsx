@@ -12,7 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/feedback';
 import { requireRole } from '@/lib/auth/session';
 import prisma from '@/lib/prisma';
-import { formatRelative, humanise } from '@/lib/utils';
+import { formatRelative, humanise, pluralize } from '@/lib/utils';
 import { slaState } from '@/services/complaint-service';
 
 export const metadata: Metadata = { title: 'Assigned Tickets' };
@@ -169,7 +169,7 @@ export default async function StaffTicketsPage({
                         {ticket._count.attachments > 0 ? (
                           <span>{ticket._count.attachments} photo(s)</span>
                         ) : null}
-                        <span>{ticket._count.updates} update(s)</span>
+                        <span>{pluralize(ticket._count.updates, 'update')}</span>
                       </div>
                     </CardContent>
                   </Link>
